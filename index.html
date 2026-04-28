@@ -256,6 +256,31 @@
       display: block;
     }
 
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #2d3a44;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      padding: 11px 22px;
+      border-radius: 999px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      z-index: 999;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* ── COPYRIGHT ── */
     .copyright {
       font-size: 8px;
@@ -299,10 +324,7 @@
         <!-- Book Now -->
         <a href="#" class="btn-book" aria-label="Book Now — Premium Manicure Services">
           <div class="btn-book-thumb">
-            <img
-              src="https://www.figma.com/api/mcp/asset/0fff4071-dea4-4d6b-89e1-d6b4e38a6261"
-              alt="Nail art"
-            >
+            <img src="nail-art.png" alt="Nail art">
           </div>
           <div class="btn-book-text">
             <span class="btn-book-title">Book Now</span>
@@ -354,17 +376,39 @@
     </div>
   </div>
 
+  <div class="toast" id="toast"></div>
+
   <script>
     function copyAddress(btn) {
-      navigator.clipboard.writeText('7301 Topanga Canyon Blvd, Suite 203, Los Angeles, CA 91303')
-        .then(() => {
-          btn.classList.add('copied');
-          btn.title = 'Copied!';
-          setTimeout(() => {
-            btn.classList.remove('copied');
-            btn.title = 'Copy address';
-          }, 2000);
-        });
+      const addr = '7301 Topanga Canyon Blvd, Suite 203, Los Angeles, CA 91303';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(addr)
+          .then(() => { showToast('📋 Address copied!'); })
+          .catch(() => fallbackCopy(addr));
+      } else {
+        fallbackCopy(addr);
+      }
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 2000);
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('📋 Address copied!'); }
+      catch { showToast('Long-press to copy the address'); }
+      document.body.removeChild(ta);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.remove('show'), 2200);
     }
   </script>
 </body>
