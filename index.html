@@ -18,32 +18,38 @@
       font-family: 'Be Vietnam Pro', sans-serif;
       background: #161311;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      min-height: 100dvh;
     }
 
     /* ── PHONE SHELL ── */
     .phone {
-      width: 390px;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
       background: #161311;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     /* ── HERO ── */
     .hero {
       position: relative;
-      height: 459px;
+      height: 52vh;
+      height: 52dvh;
+      min-height: 340px;
+      max-height: 460px;
       overflow: hidden;
+      flex-shrink: 0;
     }
 
     .hero-bg {
       position: absolute;
-      width: 553px;
-      height: 982px;
-      right: -59px;
-      top: -245px;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
+      object-position: center;
       pointer-events: none;
     }
 
@@ -97,20 +103,22 @@
     /* ── BOTTOM CARD ── */
     .card {
       background: #f8fafb;
-      border-radius: 64px 64px 0 0;
+      border-radius: 44px 44px 0 0;
       box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.10);
-      padding: 37px 32px 40px;
+      padding: 28px 24px env(safe-area-inset-bottom, 28px);
+      padding-bottom: max(28px, env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 50px;
+      gap: 16px;
+      flex: 1;
     }
 
     /* buttons group */
     .buttons {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 12px;
       width: 100%;
     }
 
@@ -119,7 +127,7 @@
       display: flex;
       align-items: center;
       gap: 20px;
-      height: 120px;
+      height: 110px;
       padding: 10px 10px 10px 10px;
       background: linear-gradient(116.29deg, #51606F 0%, #A2B2C3 100%);
       border-radius: 45px;
@@ -133,7 +141,7 @@
 
     .btn-book-thumb {
       width: 73px;
-      height: 100px;
+      height: 90px;
       border-radius: 64px;
       overflow: hidden;
       flex-shrink: 0;
@@ -168,13 +176,14 @@
 
     .btn-book-arrow {
       flex-shrink: 0;
-      padding-left: 20px;
+      margin-right: 10px;
       display: flex;
       align-items: center;
+      color: #ffffff;
     }
-    .btn-book-arrow img {
-      width: 5px;
-      height: 9px;
+    .btn-book-arrow svg {
+      width: 8px;
+      height: 14px;
       display: block;
     }
 
@@ -213,8 +222,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
+      margin-top: auto;
     }
 
     .address {
@@ -229,7 +239,7 @@
     .address-icon-btn {
       background: none;
       border: none;
-      padding: 6px;
+      padding: 4px;
       cursor: pointer;
       opacity: 0.7;
       transition: opacity 0.15s;
@@ -255,10 +265,6 @@
       text-transform: uppercase;
       text-align: center;
       width: 238px;
-    }
-
-    @media (max-width: 390px) {
-      .phone { width: 100%; }
     }
   </style>
 </head>
@@ -303,11 +309,9 @@
             <span class="btn-book-subtitle">Premium Manicure Services</span>
           </div>
           <div class="btn-book-arrow">
-            <img
-              src="https://www.figma.com/api/mcp/asset/c53b34f0-ef1d-48e6-aa9b-ec67f0d12887"
-              alt=""
-              aria-hidden="true"
-            >
+            <svg viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M1 1L7 7L1 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
         </a>
 
