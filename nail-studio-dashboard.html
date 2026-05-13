@@ -744,10 +744,87 @@
   }
   .toast.show { opacity: 1; }
 
-  @media (max-width: 640px) {
-    header, .tabs-bar { padding: 0 16px; }
-    main { padding: 20px 16px 60px; }
-    .card-body, .card-header { padding: 16px 18px; }
+  @media (max-width: 768px) {
+    /* ── HEADER ── */
+    header {
+      padding: 0 16px;
+      height: 52px;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+    }
+    .header-logo { height: 28px; }
+    .header-center { align-items: flex-start; }
+    .studio-name { font-size: 12px; letter-spacing: 0.02em; }
+    .studio-sub { display: none; }
+
+    /* ── TABS ── */
+    .tabs-bar { padding: 8px 12px; gap: 3px; }
+    .tab-btn { padding: 6px 10px; font-size: 11px; gap: 4px; }
+    .tab-btn svg { width: 12px; height: 12px; }
+    .tab-badge { font-size: 9px; padding: 1px 5px; }
+
+    /* ── MAIN ── */
+    main { padding: 16px 12px 80px; }
+
+    /* ── CARD ── */
+    .card-header { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
+    .card-body { padding: 14px 16px; }
+    .card-title { font-size: 16px; }
+    .card-icon { width: 26px; height: 26px; font-size: 13px; }
+
+    /* ── LINK LIST ── */
+    .link-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      padding: 10px 6px;
+    }
+    .link-item-left { flex-wrap: wrap; gap: 4px; width: 100%; }
+    .link-name { min-width: unset; font-size: 14px; }
+    .link-url { padding-left: 24px; width: 100%; }
+    .link-url a { font-size: 12px; word-break: break-all; display: block; }
+    .link-note { font-size: 11px; align-self: flex-start; }
+
+    /* ── BOOKING TABLE — горизонтальный скролл ── */
+    #body-booking { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .booking-table { min-width: 480px; }
+
+    /* ── HIGHLIGHTS ── */
+    .highlight-tag { font-size: 12px; padding: 6px 14px; }
+
+    /* ── CONTENT PLAN ── */
+    .drag-handle { display: none; }
+    .content-trigger { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
+    .content-trigger-left { flex: 1 1 100%; flex-wrap: wrap; gap: 6px; }
+    .content-main-title { font-size: 15px; flex: 1; min-width: 0; }
+    .content-type-badge { font-size: 10px; padding: 2px 9px; }
+    .content-arrow { display: none; }
+    /* actions row — прижаты вправо под заголовком */
+    .content-trigger > div:last-child { width: 100%; justify-content: flex-end; }
+    .content-body { padding: 12px 14px 16px; }
+    .slide-item { flex-direction: column; gap: 2px; padding: 8px 0; }
+    .slide-num { padding-top: 0; }
+
+    /* ── EDIT MODE ── */
+    .edit-row { flex-wrap: wrap; gap: 6px; padding: 10px 0; }
+    .edit-row .edit-input { flex: unset !important; width: 100%; min-width: 0; }
+    .edit-row .btn-del { align-self: flex-start; margin-left: auto; }
+    .btn-add-row { font-size: 12px; }
+
+    /* ── RTE ── */
+    .rte-toolbar { flex-wrap: wrap; gap: 2px; }
+
+    /* ── PRICE LIST ── */
+    .price-row { padding: 9px 4px; gap: 8px; }
+    .price-name { font-size: 13px; }
+    .price-val, .price-tbd { font-size: 13px; }
+    .price-note { display: block; margin-left: 0; margin-top: 2px; }
+
+    /* ── TOAST ── */
+    .toast { right: 16px; left: 16px; text-align: center; }
+
+    /* ── DELETE MODAL ── */
+    .del-modal { padding: 22px 18px; margin: 16px; }
   }
 
   /* ── PRICE LIST ──────────────────────────────── */
