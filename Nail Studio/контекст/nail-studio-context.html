@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nail Studio LA — Полный контекст проекта</title>
+<style>
+  @media print {
+    body { font-size: 11pt; }
+    .page-break { page-break-before: always; }
+    h1 { font-size: 18pt; }
+    h2 { font-size: 14pt; }
+    h3 { font-size: 12pt; }
+    a { color: #333; }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: #1E2D3D;
+    background: #fff;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 56px 80px;
+    line-height: 1.65;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    text-align: center;
+    padding: 60px 0 50px;
+    border-bottom: 2px solid #D8E5F2;
+    margin-bottom: 48px;
+  }
+  .cover-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7A90A4;
+    margin-bottom: 16px;
+  }
+  .cover-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1E2D3D;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .cover-sub {
+    font-size: 14px;
+    color: #5E7F9A;
+    margin-bottom: 28px;
+  }
+  .cover-meta {
+    display: inline-flex;
+    gap: 24px;
+    font-size: 11px;
+    color: #7A90A4;
+    background: #EBF2F9;
+    padding: 10px 24px;
+    border-radius: 20px;
+  }
+  .cover-meta span { display: flex; align-items: center; gap: 5px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 48px; }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1E2D3D;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #D8E5F2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .icon {
+    width: 28px; height: 28px;
+    background: #D8E5F2;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  h3 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5E7F9A;
+    margin: 24px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #EBF2F9;
+  }
+
+  /* ── INFO GRID ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .info-item {
+    background: #F4F8FC;
+    border: 1px solid #D8E5F2;
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+  .info-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7A90A4;
+    margin-bottom: 4px;
+  }
+  .info-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1E2D3D;
+    word-break: break-all;
+  }
+  .info-item.wide { grid-column: 1 / -1; }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7A90A4;
+    padding: 0 12px 10px;
+    border-bottom: 1px solid #D8E5F2;
+  }
+  tbody td {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid #EBF2F9;
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #F4F8FC; }
+  td.num { color: #C8D9EA; font-size: 11px; min-width: 28px; }
+  td.bold { font-weight: 500; }
+  td a { color: #5E7F9A; text-decoration: none; font-size: 12px; }
+  td a:hover { text-decoration: underline; }
+  td.note {
+    font-size: 11px;
+    color: #7A90A4;
+    background: #EBF2F9;
+    padding: 3px 9px;
+    border-radius: 10px;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  /* ── TAGS ── */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .tag {
+    padding: 7px 16px;
+    border-radius: 20px;
+    background: #EBF2F9;
+    border: 1px solid #D8E5F2;
+    font-size: 13px;
+    color: #5E7F9A;
+  }
+
+  /* ── PRICE ── */
+  .price-section { margin-bottom: 28px; }
+  .price-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5E7F9A;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #D8E5F2;
+    margin-bottom: 4px;
+  }
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 8px;
+    border-bottom: 1px solid #EBF2F9;
+    gap: 16px;
+  }
+  .price-row:last-child { border-bottom: none; }
+  .price-name { font-size: 13px; flex: 1; }
+  .price-note-small { font-size: 11px; color: #7A90A4; margin-left: 6px; }
+  .price-val { font-size: 13px; font-weight: 500; color: #5E7F9A; white-space: nowrap; }
+  .price-tbd { font-size: 12px; color: #A2B2C3; font-style: italic; }
+
+  /* ── CONTENT PLAN ── */
+  .post-item {
+    border: 1px solid #D8E5F2;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #F4F8FC;
+    border-bottom: 1px solid #EBF2F9;
+  }
+  .post-num { font-size: 11px; color: #A2B2C3; min-width: 20px; }
+  .post-title { font-size: 15px; font-weight: 500; flex: 1; }
+  .post-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .badge-reel     { background: #FEF3E8; color: #C07830; border: 1px solid #F5D5B0; }
+  .badge-carousel { background: #EDF6EE; color: #3A8A4A; border: 1px solid #C0E0C5; }
+  .badge-post     { background: #F5F0FB; color: #7A5AB8; border: 1px solid #DDD0F5; }
+  .post-status-done { background: #E6F4EA; color: #2D7A47; border: 1px solid #A8D5B5; font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 8px; }
+  .post-status-todo { background: #EBF2F9; color: #7A90A4; border: 1px solid #D8E5F2; font-size: 10px; padding: 3px 9px; border-radius: 8px; }
+  .post-body { padding: 12px 16px; }
+  .post-desc { font-size: 13px; color: #1E2D3D; line-height: 1.7; margin-bottom: 10px; }
+  .post-desc a { color: #5E7F9A; word-break: break-all; }
+  .slide-list { display: flex; flex-direction: column; gap: 0; }
+  .slide-row { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid #EBF2F9; font-size: 12px; }
+  .slide-row:last-child { border-bottom: none; }
+  .slide-n { color: #A2B2C3; min-width: 22px; font-weight: 500; padding-top: 1px; }
+  .slide-t { color: #1E2D3D; line-height: 1.6; }
+  .slide-label { font-weight: 500; display: block; margin-bottom: 2px; }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid #D8E5F2;
+    font-size: 10px;
+    color: #A2B2C3;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">Project Context Document</div>
+  <div class="cover-title">Nail Studio by Yulia Grunkovskaya</div>
+  <div class="cover-sub">Los Angeles, California — Полный контекст проекта</div>
+  <div class="cover-meta">
+    <span>📍 Canoga Park, LA</span>
+    <span>💅 Russian Manicure</span>
+    <span>📅 Май 2026</span>
+  </div>
+</div>
+
+
+<!-- СТУДИЯ -->
+<div class="section">
+  <h2><span class="icon">💅</span> Данные студии</h2>
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="info-label">Владелец</div>
+      <div class="info-value">Grunkovskaya Yulia</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Instagram</div>
+      <div class="info-value">@nailstudio.la</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Имя профиля</div>
+      <div class="info-value">Nail Studio by Yulia Grunkovskaya</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Основная услуга</div>
+      <div class="info-value">Russian Manicure</div>
+    </div>
+    <div class="info-item wide">
+      <div class="info-label">Адрес</div>
+      <div class="info-value">7301 Topanga Canyon Blvd, Suite 203, Los Angeles, CA 91303</div>
+    </div>
+    <div class="info-item wide">
+      <div class="info-label">Шапка профиля</div>
+      <div class="info-value">Dry Mani • Pedi • Hard Gel / Non-toxic | 3–4 Weeks Wear / 📍 Canoga Park, Los Angeles / ⬇️ BOOK NOW</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Сайт-прокладка</div>
+      <div class="info-value">nailstudio-la.vercel.app</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Мастера</div>
+      <div class="info-value">Yulia (владелец), Sia</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- HIGHLIGHTS -->
+<div class="section">
+  <h2><span class="icon">⭐</span> Highlights (утверждённые)</h2>
+  <div class="tags">
+    <span class="tag">Best French</span>
+    <span class="tag">Location</span>
+    <span class="tag">Reviews</span>
+    <span class="tag">Prices</span>
+    <span class="tag">Opening</span>
+    <span class="tag">Before / After</span>
+    <span class="tag">Owner Awards</span>
+    <span class="tag">Yulia</span>
+    <span class="tag">Sia</span>
+  </div>
+</div>
+
+
+<!-- INSTAGRAM КОНКУРЕНТЫ -->
+<div class="section page-break">
+  <h2><span class="icon">📸</span> Instagram конкуренты (15)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Аккаунт</th>
+        <th>Ссылка</th>
+        <th>Заметка</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="num">1</td><td class="bold">@russianmanicure_nyc</td><td><a href="https://www.instagram.com/russianmanicure_nyc/">instagram.com/russianmanicure_nyc</a></td><td>~12K</td></tr>
+      <tr><td class="num">2</td><td class="bold">@beautystudio_by_veronika</td><td><a href="https://www.instagram.com/beautystudio_by_veronika/">instagram.com/beautystudio_by_veronika</a></td><td>~10K</td></tr>
+      <tr><td class="num">3</td><td class="bold">@cretunails</td><td><a href="https://www.instagram.com/cretunails/">instagram.com/cretunails</a></td><td>~10K</td></tr>
+      <tr><td class="num">4</td><td class="bold">@euronails.art</td><td><a href="https://www.instagram.com/euronails.art/">instagram.com/euronails.art</a></td><td>~10K</td></tr>
+      <tr><td class="num">5</td><td class="bold">@euphorianail_studio</td><td><a href="https://www.instagram.com/euphorianail_studio/">instagram.com/euphorianail_studio</a></td><td>~10K</td></tr>
+      <tr><td class="num">6</td><td class="bold">@mstudio_nyc</td><td><a href="https://www.instagram.com/mstudio_nyc/">instagram.com/mstudio_nyc</a></td><td>~9.6K</td></tr>
+      <tr><td class="num">7</td><td class="bold">@naomi_nails.nyc</td><td><a href="https://www.instagram.com/naomi_nails.nyc/">instagram.com/naomi_nails.nyc</a></td><td>NYC</td></tr>
+      <tr><td class="num">8</td><td class="bold">@lisa_kon_</td><td><a href="https://www.instagram.com/lisa_kon_/">instagram.com/lisa_kon_</a></td><td>—</td></tr>
+      <tr><td class="num">9</td><td class="bold">@glowlyusa</td><td><a href="https://www.instagram.com/glowlyusa/">instagram.com/glowlyusa</a></td><td>LA</td></tr>
+      <tr><td class="num">10</td><td class="bold">@studio_kristij</td><td><a href="https://www.instagram.com/studio_kristij/">instagram.com/studio_kristij</a></td><td>—</td></tr>
+      <tr><td class="num">11</td><td class="bold">@nail_sunnyla</td><td><a href="https://www.instagram.com/nail_sunnyla/">instagram.com/nail_sunnyla</a></td><td>~72K · Beverly Hills</td></tr>
+      <tr><td class="num">12</td><td class="bold">@majolie.la</td><td><a href="https://www.instagram.com/majolie.la/">instagram.com/majolie.la</a></td><td>LA</td></tr>
+      <tr><td class="num">13</td><td class="bold">@noorbeautique</td><td><a href="https://www.instagram.com/noorbeautique/">instagram.com/noorbeautique</a></td><td>~9.5K · West Hollywood</td></tr>
+      <tr><td class="num">14</td><td class="bold">@look.at.me.la</td><td><a href="https://www.instagram.com/look.at.me.la/">instagram.com/look.at.me.la</a></td><td>~7K · West Hollywood</td></tr>
+      <tr><td class="num">15</td><td class="bold">@jl_beautystudio_nails</td><td><a href="https://www.instagram.com/jl_beautystudio_nails/">instagram.com/jl_beautystudio_nails</a></td><td>Burbank/LA</td></tr>
+      <tr><td class="num">16</td><td class="bold">@avantgarde_lounge</td><td><a href="https://www.instagram.com/avantgarde_lounge/">instagram.com/avantgarde_lounge</a></td><td>LA</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- САЙТЫ КОНКУРЕНТОВ -->
+<div class="section">
+  <h2><span class="icon">🌐</span> Сайты конкурентов (10)</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Студия</th><th>Сайт</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num">1</td><td class="bold">Cretu Nails</td><td><a href="https://cretunails.com/">cretunails.com</a></td></tr>
+      <tr><td class="num">2</td><td class="bold">Euronails</td><td><a href="https://www.euronails.art/">euronails.art</a></td></tr>
+      <tr><td class="num">3</td><td class="bold">Euphoria Nail Studio</td><td><a href="https://euphorianailstudio.glossgenius.com/">euphorianailstudio.glossgenius.com</a></td></tr>
+      <tr><td class="num">4</td><td class="bold">Naomi Nails NYC</td><td><a href="https://www.naominailnyc.com/">naominailnyc.com</a></td></tr>
+      <tr><td class="num">5</td><td class="bold">Lisa Kon</td><td><a href="https://www.lisakon.us/">lisakon.us</a></td></tr>
+      <tr><td class="num">6</td><td class="bold">Glowly USA</td><td><a href="https://glowlyusa.com/">glowlyusa.com</a></td></tr>
+      <tr><td class="num">7</td><td class="bold">Nail Sunny LA</td><td><a href="https://nailsunny.us/">nailsunny.us</a></td></tr>
+      <tr><td class="num">8</td><td class="bold">Look At Me</td><td><a href="https://www.lookat-me.us/">lookat-me.us</a></td></tr>
+      <tr><td class="num">9</td><td class="bold">JL Beauty Studio</td><td><a href="https://jlbeauty.studio/">jlbeauty.studio</a></td></tr>
+      <tr><td class="num">10</td><td class="bold">Avant Garde Lounge</td><td><a href="https://www.avantgardelounge.com/">avantgardelounge.com</a></td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- БУКИНГ -->
+<div class="section">
+  <h2><span class="icon">📅</span> Букинг-системы конкурентов (7)</h2>
+  <table>
+    <thead>
+      <tr><th>Платформа</th><th>Сайт</th><th>Кто использует</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="bold">Vagaro</td><td><a href="https://www.vagaro.com">vagaro.com</a></td><td style="font-size:12px;color:#7A90A4">russianmanicure, cretunails</td></tr>
+      <tr><td class="bold">Square</td><td><a href="https://squareup.com">squareup.com</a></td><td style="font-size:12px;color:#7A90A4">2 студии</td></tr>
+      <tr><td class="bold">Dikidi</td><td><a href="https://dikidi.net">dikidi.net</a></td><td style="font-size:12px;color:#7A90A4">отдельная студия</td></tr>
+      <tr><td class="bold">Zenoti</td><td><a href="https://glowlyusa.zenoti.com">glowlyusa.zenoti.com</a></td><td style="font-size:12px;color:#7A90A4">Glowly USA</td></tr>
+      <tr><td class="bold">Alteg.io</td><td><a href="https://alteg.io">alteg.io</a></td><td style="font-size:12px;color:#7A90A4">отдельная студия</td></tr>
+      <tr><td class="bold">Fresha</td><td><a href="https://www.fresha.com">fresha.com</a></td><td style="font-size:12px;color:#7A90A4">Noor Beautique</td></tr>
+      <tr><td class="bold">GlossGenius</td><td><a href="https://glossgenius.com">glossgenius.com</a></td><td style="font-size:12px;color:#7A90A4">Euphoria Nail Studio</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ПРАЙС -->
+<div class="section page-break">
+  <h2><span class="icon">💰</span> Прайс-лист</h2>
+
+  <div class="price-section">
+    <div class="price-section-title">Manicure</div>
+    <div class="price-row"><span class="price-name">Strong Gel Manicure <span class="price-note-small">— dry manicure with gel polish</span></span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Dry Manicure <span class="price-note-small">— no polish</span></span><span class="price-tbd">—</span></div>
+  </div>
+
+  <div class="price-section">
+    <div class="price-section-title">Nail Extension (Poly Gel | Hard Gel)</div>
+    <div class="price-row"><span class="price-name">Short</span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Medium</span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Long</span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Extra Long</span><span class="price-tbd">—</span></div>
+  </div>
+
+  <div class="price-section">
+    <div class="price-section-title">Extension Fill (Poly Gel | Hard Gel)</div>
+    <div class="price-row"><span class="price-name">Short</span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Medium</span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Long</span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Extra Long</span><span class="price-tbd">—</span></div>
+  </div>
+
+  <div class="price-section">
+    <div class="price-section-title">Pedicure</div>
+    <div class="price-row"><span class="price-name">Dry Pedicure <span class="price-note-small">— no polish</span></span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Gel Pedicure</span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Complicated Feet</span><span class="price-val">+$40</span></div>
+  </div>
+
+  <div class="price-section">
+    <div class="price-section-title">Repair / Removal</div>
+    <div class="price-row"><span class="price-name">Gel Removal Only <span class="price-note-small">— no new set</span></span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Removal Acrylic / Gel-X / Dip Powder</span><span class="price-val">$40</span></div>
+    <div class="price-row"><span class="price-name">One Nail Repair</span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">One Nail Extension</span><span class="price-tbd">—</span></div>
+  </div>
+
+  <div class="price-section">
+    <div class="price-section-title">Design</div>
+    <div class="price-row"><span class="price-name">French, Ombre, Chrome Powder</span><span class="price-val">from $20</span></div>
+    <div class="price-row"><span class="price-name">Nail Stickers, Stamping <span class="price-note-small">— per nail</span></span><span class="price-val">$5</span></div>
+    <div class="price-row"><span class="price-name">Nail Art <span class="price-note-small">— per nail</span></span><span class="price-val">from $10</span></div>
+    <div class="price-row"><span class="price-name">Swarovski Crystal Design <span class="price-note-small">— original crystals</span></span><span class="price-tbd">—</span></div>
+    <div class="price-row"><span class="price-name">Cat Eye</span><span class="price-val">$10</span></div>
+  </div>
+</div>
+
+
+<!-- КОНТЕНТ ПЛАН -->
+<div class="section page-break">
+  <h2><span class="icon">📌</span> Контент-план (11 постов)</h2>
+
+  <!-- 1 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">1</span>
+      <span class="post-title">Non-toxic</span>
+      <span class="post-badge badge-carousel">Карусель</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Закреп №1. Объясняем почему наши материалы безопаснее — без HEMA и TPO. Закрывает страх вредной химии, строим доверие через прозрачность.</div>
+      <div class="slide-list">
+        <div class="slide-row"><span class="slide-n">1</span><span class="slide-t"><span class="slide-label">Обложка</span>«Non-toxic» — это не просто слово. Сегодня почти каждая студия говорит о безопасности...</div></div>
+        <div class="slide-row"><span class="slide-n">2</span><span class="slide-t">Мы пошли другим путём. Мы используем только высококачественные европейские материалы без HEMA и TPO.</span></div>
+        <div class="slide-row"><span class="slide-n">3</span><span class="slide-t">Чище состав — больше комфорта. Покрытие должно выглядеть идеально и ощущаться спокойно в носке.</span></div>
+        <div class="slide-row"><span class="slide-n">4</span><span class="slide-t">Красиво — это ещё не результат. Важно не только ЧТО наносится, но и КАК.</span></div>
+        <div class="slide-row"><span class="slide-n">5</span><span class="slide-t">Стерильность — это база. Чистые инструменты и строгий стерильный подход — основа доверия.</span></div>
+        <div class="slide-row"><span class="slide-n">6</span><span class="slide-t">Техника мастера — ключ к результату. Ногти носятся 3–4 недели без трещин, сколов и отслоек.</span></div>
+        <div class="slide-row"><span class="slide-n">7</span><span class="slide-t"><span class="slide-label">Финал</span>Запишитесь на процедуру, где красота идёт вместе с заботой и безопасностью.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">2</span>
+      <span class="post-title">Наши услуги</span>
+      <span class="post-badge badge-carousel">Карусель</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Закреп №2. Полный прайс и список услуг. Снимает вопрос «а что вы вообще делаете» — конверсионный пост для новых подписчиков.</div>
+      <div class="slide-list">
+        <div class="slide-row"><span class="slide-n">1</span><span class="slide-t"><span class="slide-label">Обложка</span>Наши услуги</span></div>
+        <div class="slide-row"><span class="slide-n">2</span><span class="slide-t"><span class="slide-label">Маникюр</span>Классический · Гелевое покрытие · Укрепление натуральных ногтей · Мужской маникюр</span></div>
+        <div class="slide-row"><span class="slide-n">3</span><span class="slide-t"><span class="slide-label">Наращивание</span>Разная длина и формы · Салонный миндаль · Квадрат · Френч</span></div>
+        <div class="slide-row"><span class="slide-n">4</span><span class="slide-t"><span class="slide-label">Французский маникюр</span>Идеально ровные линии · Чистая архитектура ногтя · Аккуратный, носибельный результат</span></div>
+        <div class="slide-row"><span class="slide-n">5</span><span class="slide-t"><span class="slide-label">Дизайн</span>3D-дизайн · Камни Swarovski · Инкрустации и текстуры · Омбре · Рисованный дизайн</span></div>
+        <div class="slide-row"><span class="slide-n">6</span><span class="slide-t"><span class="slide-label">Почему выбирают нас</span>Без HEMA и TPO · Результат 3–4 недели · Стандарт стерилизации · Внимание к деталям</span></div>
+        <div class="slide-row"><span class="slide-n">7</span><span class="slide-t"><span class="slide-label">Финал</span>📍 7301 Topanga Canyon Blvd, Suite 203 · +1 (805) 624-3442</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">3</span>
+      <span class="post-title">Как нас найти</span>
+      <span class="post-badge badge-reel">Видео</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Закреп №3. Видео с адресом и навигацией. Снимает вопрос «где это?» — особенно важно для Canoga Park.</div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">4</span>
+      <span class="post-title">Рилс со стройкой</span>
+      <span class="post-badge badge-reel">Рилс</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Кадры неготового помещения под музыку. Материал уже есть. Показывает процесс создания студии, создаёт ожидание.</div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">5</span>
+      <span class="post-title">Рилс — Юля идёт по помещению</span>
+      <span class="post-badge badge-reel">Рилс</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Юля ходит по помещению и смотрит по сторонам. Материал уже есть. Личный бренд, атмосфера, предвкушение.</div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">6</span>
+      <span class="post-title">Рилс — Coming Soon</span>
+      <span class="post-badge badge-reel">Рилс</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Coming Soon — атмосферный анонс открытия. Создаёт ожидание, набирает аудиторию до открытия.</div>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">7</span>
+      <span class="post-title">Рилс — This Vibes</span>
+      <span class="post-badge badge-reel">Рилс</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Атмосферный рилс в стиле «this vibes». Атмосфера студии, эстетика, настроение — без слов.</div>
+      <div class="slide-list">
+        <div class="slide-row"><span class="slide-n">ref</span><span class="slide-t"><a href="https://www.instagram.com/reel/DSyDc79ieG7/">instagram.com/reel/DSyDc79ieG7</a></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">8</span>
+      <span class="post-title">Рилс — отдаляющаяся камера 0.5x</span>
+      <span class="post-badge badge-reel">Рилс</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Рилс где камера отдаляется на 0.5x — reveal эффект.</div>
+      <div class="slide-list">
+        <div class="slide-row"><span class="slide-n">ref</span><span class="slide-t"><a href="https://www.instagram.com/reel/DUi4IqKCF0d/">instagram.com/reel/DUi4IqKCF0d</a></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">9</span>
+      <span class="post-title">Рилс — быстрые кадры стройки</span>
+      <span class="post-badge badge-reel">Рилс</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Процессы стройки с быстрыми переключениями кадров. Быстрый монтаж под бит.</div>
+      <div class="slide-list">
+        <div class="slide-row"><span class="slide-n">ref</span><span class="slide-t"><a href="https://www.instagram.com/reel/DW3yN4PDDX8/">instagram.com/reel/DW3yN4PDDX8</a></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">10</span>
+      <span class="post-title">Рилс — монтаж со съёмок с Настей</span>
+      <span class="post-badge badge-reel">Рилс</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">Монтаж из материала со съёмок с Настей.</div>
+      <div class="slide-list">
+        <div class="slide-row"><span class="slide-n">ref</span><span class="slide-t"><a href="https://www.instagram.com/reel/DT3GDDBAkj5/">instagram.com/reel/DT3GDDBAkj5</a></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11 -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-num">11</span>
+      <span class="post-title">Рилс — стерилизация</span>
+      <span class="post-badge badge-reel">Рилс</span>
+      <span class="post-status-todo">· В очереди</span>
+    </div>
+    <div class="post-body">
+      <div class="post-desc">«Как часто вы изучаете стерилизацию своего мастера» — вовлекающий вопрос, строим доверие.</div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- GOOGLE MAPS DESCRIPTIONS -->
+<div class="section page-break">
+  <h2><span class="icon">📍</span> Описание для Google Maps</h2>
+
+  <h3>Русская версия</h3>
+  <div style="background:#F4F8FC;border:1px solid #D8E5F2;border-radius:10px;padding:20px 24px;line-height:1.85;font-size:13px;color:#1E2D3D;white-space:pre-line;margin-bottom:20px">Nail Studio by Yulia Grunkovskaya — профессиональная студия сухого маникюра в Canoga Park, Los Angeles.
+
+Мы специализируемся на точном dry manicure, укреплении, моделировании и наращивании ногтей с ноской 3–4 недели без сколов и отслоек, а также сухом педикюре.
+
+В работе используются европейские материалы без HEMA и TPO, ориентированные на здоровье натуральных ногтей и отсутствие риска раздражения и аллергических реакций.
+
+Все инструменты проходят медицинскую стерилизацию в автоклаве. Одноразовые материалы и стерильные инструменты вскрываются при клиенте.
+
+Каждый мастер студии работает по единой технике и системе обучения, созданной Юлией Грунковской — международным чемпионом, судьёй IBATAJ и автором системы обучения, по которой работают 4,800+ мастеров по всему миру.</div>
+
+  <h3>English version</h3>
+  <div style="background:#F4F8FC;border:1px solid #D8E5F2;border-radius:10px;padding:20px 24px;line-height:1.85;font-size:13px;color:#1E2D3D;white-space:pre-line">Nail Studio by Yulia Grunkovskaya — a professional dry manicure studio in Canoga Park, Los Angeles.
+
+We specialize in precise dry manicure, nail strengthening, sculpting and nail extensions with 3–4 weeks of wear without chips or lifting, as well as dry pedicure.
+
+We use European products free of HEMA and TPO — formulated to protect natural nail health and eliminate the risk of skin irritation and allergic reactions.
+
+All tools are medically sterilized in an autoclave. Disposable materials and sterile instruments are opened in front of the client.
+
+Every nail technician at the studio works under the same technique and training system created by Yulia Grunkovskaya — international champion, IBATAJ judge, and the author of a training program with 4,800+ graduates worldwide.</div>
+</div>
+
+
+<!-- YELP COMPETITORS -->
+<div class="section page-break">
+  <h2><span class="icon">⭐</span> Конкуренты на Yelp</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Студия</th><th>Ссылка</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num">1</td><td class="bold">Kristi J Nail Studio</td><td><a href="https://www.yelp.com/biz/kristi-j-nail-studio-los-angeles">yelp.com/biz/kristi-j-nail-studio-los-angeles</a></td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- SERVICE DESCRIPTIONS -->
+<div class="section page-break">
+  <h2><span class="icon">💅</span> Описания услуг</h2>
+
+  <!-- Dry Manicure -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-title">Dry Manicure (No Polish)</span>
+    </div>
+    <div class="post-body">
+      <h3>RU</h3>
+      <div class="post-desc">Точный dry manicure без покрытия, направленный на чистую кутикулу, здоровье натуральных ногтей и правильную архитектуру ногтя.
+
+Во время процедуры тщательно очищается зона кутикулы, выравнивается ногтевая пластина и создаётся аккуратный натуральный вид без покрытия.
+
+Идеально подходит для клиентов, которые любят естественные ногти, минимализм или хотят сделать перерыв от покрытия.
+
+Процедура выполняется по авторской технике Юлии Грунковской с использованием медицински стерилизованных инструментов и европейских материалов без HEMA и TPO.</div>
+      <h3>EN</h3>
+      <div class="post-desc">Precise dry manicure without polish focused on clean cuticles, natural nail health, and proper nail architecture.
+
+During the procedure, the cuticle area is carefully cleaned, the nail plate is refined, and a neat natural look without polish is created.
+
+Perfect for clients who love natural nails, minimalism, or want to take a break from gel coverage.
+
+The procedure is performed using Yulia Grunkovskaya's signature technique with medically sterilized instruments and European HEMA-free &amp; TPO-free products.</div>
+    </div>
+  </div>
+
+  <!-- Strong Gel Manicure -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-title">Strong Gel Manicure</span>
+    </div>
+    <div class="post-body">
+      <h3>RU</h3>
+      <div class="post-desc">Фирменный strong gel manicure с ноской 3–4 недели без сколов и отслоек.
+
+Процедура включает точный dry manicure, укрепление ногтей, выстраивание правильной архитектуры и покрытие гель-лаком с использованием профессиональных европейских материалов без HEMA и TPO.
+
+Идеально подходит для клиентов, которые хотят прочные, аккуратные и долговечные ногти с натуральным и эстетичным результатом.</div>
+      <h3>EN</h3>
+      <div class="post-desc">Signature strong gel manicure designed for 3–4 weeks of wear without chips or lifting.
+
+The procedure includes precise dry manicure, nail strengthening, proper nail architecture, and gel polish application using professional European HEMA-free &amp; TPO-free products.
+
+Perfect for clients who want strong, clean, and long-lasting nails with a natural and aesthetic finish.</div>
+    </div>
+  </div>
+
+  <!-- French Manicure -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-title">French Manicure</span>
+    </div>
+    <div class="post-body">
+      <h3>RU</h3>
+      <div class="post-desc">Рисованный French manicure с идеально выстроенной архитектурой и аккуратной линией улыбки.
+
+Процедура сочетает фирменную технику dry manicure и детальную прорисовку френча с использованием профессиональных европейских материалов без HEMA и TPO. Линия прорисовывается вручную с учётом естественной формы каждого ногтя. Выполняется на натуральных ногтях и наращенных, в классическом белом или цветном варианте. Держится 3–4 недели.
+
+Идеально для клиентов, которые любят аккуратный, дорогой и натурально выглядящий маникюр.</div>
+      <h3>EN</h3>
+      <div class="post-desc">Hand-painted French manicure with perfectly balanced nail architecture and a clean smile line.
+
+This procedure combines our signature dry manicure technique with detailed hand-painted French design using professional European HEMA-free &amp; TPO-free products. The smile line is painted individually to complement the natural shape of each nail. Available on both natural nails and extensions, in classic white or colored variations. Lasts 3–4 weeks.
+
+Perfect for clients who love clean, elegant, and naturally luxurious-looking nails.</div>
+    </div>
+  </div>
+
+  <!-- Nail Extension -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-title">Nail Extension Poly Gel | Hard Gel (Short / Medium / Long / Extra Long)</span>
+    </div>
+    <div class="post-body">
+      <h3>RU</h3>
+      <div class="post-desc">Моделирование ногтей современными гелевыми техниками для прочных, лёгких и долговечных ногтей.
+
+Процедура включает полную подготовку ногтей, точный dry manicure, построение архитектуры, моделирование формы и покрытие с использованием профессиональных европейских материалов без HEMA и TPO под желаемую длину и стиль.
+
+Ногти выглядят эстетично, комфортно ощущаются в носке и сохраняют аккуратный вид 3–4 недели без отслоек и поломок.
+
+Доступная длина: short, medium, long и extra long.</div>
+      <h3>EN</h3>
+      <div class="post-desc">Nail extensions created with modern gel techniques for strong, lightweight, and long-lasting nails.
+
+The procedure includes full nail preparation, precise dry manicure, nail architecture, sculpting, and gel application using professional European HEMA-free &amp; TPO-free products tailored to your desired length and style.
+
+The nails look elegant, feel comfortable in everyday wear, and maintain a clean appearance for 3–4 weeks without lifting or breakage.
+
+Available lengths: short, medium, long, and extra long.</div>
+    </div>
+  </div>
+
+  <!-- Extension Fill -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-title">Extension Fill Poly Gel | Hard Gel (Short / Medium / Long / Extra Long)</span>
+    </div>
+    <div class="post-body">
+      <h3>RU</h3>
+      <div class="post-desc">Профессиональная коррекция гелевых ногтей, направленная на восстановление архитектуры и поддержание идеального состояния наращивания.
+
+Процедура включает dry manicure, обработку кутикулы, коррекцию архитектуры, обновление формы при необходимости и новое покрытие с использованием профессиональных европейских материалов без HEMA и TPO.
+
+Позволяет сохранять прочные, аккуратные и эстетичные ногти с долговечной ноской.
+
+Доступны длины: short, medium, long и extra long.</div>
+      <h3>EN</h3>
+      <div class="post-desc">Professional gel nail fill designed to restore nail architecture and maintain extensions in perfect condition.
+
+The procedure includes dry manicure, cuticle care, nail structure correction, reshaping if needed, and fresh gel application using professional European HEMA-free &amp; TPO-free products.
+
+Helps maintain strong, clean, and aesthetic nails with long-lasting wear.
+
+Available lengths: short, medium, long, and extra long.</div>
+    </div>
+  </div>
+
+  <!-- Dry Pedicure -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-title">Dry Pedicure (No Polish)</span>
+    </div>
+    <div class="post-body">
+      <h3>RU</h3>
+      <div class="post-desc">Dry pedicure без покрытия с глубокой обработкой кутикулы, гладкой кожей стоп и аккуратным натуральным видом ногтей.
+
+Во время процедуры тщательно очищается зона кутикулы и обрабатываются стопы для свежего и ухоженного результата без покрытия.
+
+Идеально подходит для клиентов, которые любят естественный вид, минимальный уход и комфорт.</div>
+      <h3>EN</h3>
+      <div class="post-desc">Dry pedicure without polish focused on deep cuticle care, smooth feet, and a clean natural nail appearance.
+
+During the procedure, the cuticle area is carefully cleaned and the feet are treated for a fresh, neat, and polished look without gel coverage.
+
+Perfect for clients who prefer a natural appearance, minimal maintenance, and comfort.</div>
+    </div>
+  </div>
+
+  <!-- Gel Pedicure -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-title">Gel Pedicure</span>
+    </div>
+    <div class="post-body">
+      <h3>RU</h3>
+      <div class="post-desc">Долговечный gel pedicure с точной dry обработкой кутикулы, гладкими стопами и стойким гелевым покрытием.
+
+Процедура сочетает детальную dry технику педикюра и долговечное покрытие с использованием профессиональных европейских материалов без HEMA и TPO, которое сохраняет аккуратный и блестящий вид на протяжении всей носки.
+
+В работе используются медицински стерилизованные инструменты для максимальной безопасности и комфорта.</div>
+      <h3>EN</h3>
+      <div class="post-desc">Long-lasting gel pedicure with precise dry cuticle care, smooth feet, and durable gel polish.
+
+This service combines detailed dry pedicure technique with long-lasting gel application using professional European HEMA-free &amp; TPO-free products that keep the nails glossy and clean-looking throughout the entire wear period.
+
+All procedures are performed with medically sterilized instruments for maximum safety and comfort.</div>
+    </div>
+  </div>
+
+  <!-- Swarovski Crystal Design -->
+  <div class="post-item">
+    <div class="post-header">
+      <span class="post-title">Swarovski Crystal Design</span>
+    </div>
+    <div class="post-body">
+      <h3>RU</h3>
+      <div class="post-desc">Инкрустация оригинальными кристаллами Swarovski — от минималистичных акцентов до сложных ювелирных композиций.
+
+Мы используем только оригинальные стразы Swarovski, которые не затираются и сохраняют блеск на протяжении всей носки. Каждый элемент выкладывается вручную, создавая эффект изящного ювелирного украшения на ногтях.
+
+Благодаря авторской технике крепления, стразы надёжно фиксируются и не отпадают во время носки.
+
+Идеально для клиентов, которые любят утончённый, сияющий и выразительный nail design с долговечным результатом.</div>
+      <h3>EN</h3>
+      <div class="post-desc">Designs created with original Swarovski crystals — from minimalist accents to detailed jewelry-style compositions.
+
+We use only original Swarovski crystals that do not lose their shine and maintain their brilliance throughout the entire wear period. Every element is placed by hand to create the effect of elegant fine jewelry on the nails.
+
+Thanks to our signature attachment technique, the crystals stay securely in place and do not fall off during wear.
+
+Perfect for clients who love refined, sparkling, and expressive nail designs with a long-lasting result.</div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="doc-footer">
+  Nail Studio by Yulia Grunkovskaya · Los Angeles · Контекст проекта · Май 2026
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nail Studio · Project Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="/logo-ns.svg">
+<script src="/js/supabase.min.js"></script>
+<style>
+  :root {
+    --bg:       #EBF2F9;
+    --surface:  #FFFFFF;
+    --panel:    #D8E5F2;
+    --mid:      #A2B2C3;
+    --deep:     #6B89A3;
+    --ink:      #1E2D3D;
+    --muted:    #7A90A4;
+    --border:   #C8D9EA;
+    --tab-active: #A2B2C3;
+    --shadow:   rgba(30,45,61,0.08);
+    --accent:   #5E7F9A;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ─────────────────────────────────── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    position: relative;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-logo {
+    height: 36px;
+    width: auto;
+    display: block;
+  }
+
+  .header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+
+  .studio-name {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .studio-sub {
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  /* ── TABS BAR ────────────────────────────────── */
+  .tabs-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    padding: 7px 16px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--muted);
+    border: 1px solid transparent;
+    background: none;
+    cursor: pointer;
+    border-radius: 20px;
+    white-space: nowrap;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tab-btn:hover {
+    background: var(--panel);
+    color: var(--ink);
+    border-color: var(--border);
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: white;
+    font-weight: 500;
+    border-color: var(--accent);
+  }
+
+  .tab-badge {
+    background: rgba(255,255,255,0.25);
+    color: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+
+  .tab-btn:not(.active) .tab-badge {
+    background: var(--panel);
+    color: var(--deep);
+  }
+
+  /* ── MAIN ────────────────────────────────────── */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 36px 32px 80px;
+  }
+
+  /* ── PANELS ──────────────────────────────────── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── CARD ────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+
+  .card-header {
+    padding: 20px 28px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--panel);
+    background: #FAFDFF;
+  }
+
+  .card-title-wrap { display:flex; align-items:center; gap:10px; }
+
+  .card-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--panel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .card-title {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .card-count {
+    font-size: 11px;
+    color: var(--deep);
+    background: var(--panel);
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 400;
+  }
+
+  .card-body { padding: 22px 28px; }
+
+  /* ── BUTTONS ─────────────────────────────────── */
+  .btn-edit {
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.15s;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+  }
+  .btn-edit:hover { background: var(--panel); border-color: var(--mid); color: var(--accent); }
+
+  .btn-save {
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.15s;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: white;
+  }
+  .btn-save:hover { background: var(--deep); border-color: var(--deep); }
+
+  /* ── LINK LIST ───────────────────────────────── */
+  .link-list { display:flex; flex-direction:column; gap:2px; }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 12px;
+    border-radius: 8px;
+    transition: background 0.1s;
+    gap: 12px;
+  }
+  .link-item:hover { background: var(--bg); }
+
+  .link-item-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .link-num {
+    font-size: 13px;
+    color: var(--border);
+    font-weight: 400;
+    min-width: 20px;
+    text-align: right;
+  }
+
+  .link-name {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink);
+    min-width: 160px;
+  }
+
+  .link-url a {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.12s;
+  }
+  .link-url a:hover { color: var(--accent); text-decoration: underline; }
+
+  .link-note {
+    font-size: 13px;
+    color: var(--mid);
+    white-space: nowrap;
+    background: var(--panel);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* ── EDIT MODE ───────────────────────────────── */
+  .edit-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--panel);
+  }
+
+  .edit-input {
+    flex: 1;
+    padding: 8px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink);
+    background: var(--bg);
+    outline: none;
+    transition: border 0.12s;
+  }
+  .edit-input:focus { border-color: var(--mid); background: white; }
+
+  .btn-del {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--border);
+    font-size: 16px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: all 0.12s;
+    line-height: 1;
+  }
+  .btn-del:hover { color: #C07070; background: #FFF0F0; }
+
+  .btn-add-row {
+    margin-top: 12px;
+    padding: 8px 16px;
+    border: 1px dashed var(--mid);
+    border-radius: 8px;
+    background: none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.12s;
+    width: 100%;
+    text-align: left;
+  }
+  .btn-add-row:hover { border-color: var(--accent); color: var(--accent); background: var(--panel); }
+
+  /* ── BOOKING TABLE ───────────────────────────── */
+  .booking-table { width:100%; border-collapse:collapse; }
+
+  .booking-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 12px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .booking-table td {
+    padding: 11px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    border-bottom: 1px solid var(--panel);
+    vertical-align: middle;
+  }
+  .booking-table tr:last-child td { border-bottom: none; }
+  .booking-table tr:hover td { background: var(--bg); }
+  .booking-platform { font-weight: 500; color: var(--ink); }
+  .booking-link a { color: var(--muted); text-decoration: none; font-size: 14px; }
+  .booking-link a:hover { color: var(--accent); }
+
+  /* ── HIGHLIGHTS ──────────────────────────────── */
+  .highlights-wrap { display:flex; flex-wrap:wrap; gap:10px; }
+
+  .highlight-tag {
+    padding: 8px 18px;
+    border-radius: 20px;
+    background: var(--panel);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    transition: all 0.12s;
+  }
+  .highlight-tag:hover { background: var(--mid); color: white; border-color: var(--mid); }
+
+  .highlights-edit { display:flex; flex-wrap:wrap; gap:8px; }
+
+  .highlight-edit-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 6px 4px 12px;
+  }
+  .highlight-edit-item input {
+    border: none;
+    background: transparent;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--accent);
+    outline: none;
+    width: 110px;
+  }
+
+  /* ── CONTENT PLAN — ACCORDION ───────────────── */
+  .content-list { display:flex; flex-direction:column; gap:8px; }
+
+  .content-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  }
+  .content-item.dragging {
+    opacity: 0.4;
+    transform: scale(0.98);
+  }
+  .content-item.drag-over {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent), 0 4px 20px rgba(94,127,154,0.18);
+    transform: scale(1.01);
+  }
+  .drag-handle {
+    cursor: grab;
+    color: var(--border);
+    font-size: 16px;
+    padding: 0 4px 0 0;
+    flex-shrink: 0;
+    line-height: 1;
+    transition: color 0.12s;
+    user-select: none;
+  }
+  .drag-handle:hover { color: var(--mid); }
+  .drag-handle:active { cursor: grabbing; }
+
+  .content-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+    gap: 16px;
+  }
+  .content-trigger:hover { background: var(--bg); }
+  .content-item.open .content-trigger { background: var(--panel); border-bottom: 1px solid var(--border); }
+
+  .content-trigger-left { display:flex; align-items:center; gap:14px; flex:1; min-width:0; }
+
+  .content-index {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+    min-width: 20px;
+  }
+
+  .content-main-title {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .content-type-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 12px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .badge-рилс     { background: #FEF3E8; color: #C07830; border-color: #F5D5B0; }
+  .badge-карусель { background: #EDF6EE; color: #3A8A4A; border-color: #C0E0C5; }
+  .badge-пост     { background: #F5F0FB; color: #7A5AB8; border-color: #DDD0F5; }
+
+  .content-arrow {
+    font-size: 13px;
+    color: var(--mid);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .content-item.open .content-arrow { transform: rotate(90deg); }
+
+  .content-description {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-top: 3px;
+    line-height: 1.6;
+  }
+
+  .content-body {
+    display: none;
+    padding: 18px 22px 20px;
+    border-top: 1px solid var(--panel);
+  }
+  .content-item.open .content-body { display: block; }
+
+  .slide-list { display:flex; flex-direction:column; gap:0; }
+
+  .slide-item {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--panel);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .slide-item:last-child { border-bottom: none; }
+
+  .slide-num {
+    font-size: 10px;
+    color: var(--mid);
+    min-width: 22px;
+    padding-top: 2px;
+    font-weight: 500;
+  }
+  .slide-text { font-size: 14px; font-weight: 400; color: var(--muted); line-height: 1.65; }
+  .slide-label { font-weight: 500; color: var(--ink); font-size: 14px; display:block; margin-bottom:2px; }
+
+  /* Edit posts */
+  .post-edit-wrap { display:flex; flex-direction:column; gap:8px; padding-top:4px; }
+
+  .slide-edit-row { display:flex; gap:6px; align-items:flex-start; }
+  .slide-edit-num { font-size: 10px; color: var(--mid); min-width: 22px; padding-top: 10px; font-weight:500; }
+
+  .slide-edit-input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--bg);
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    min-height: 40px;
+    transition: border 0.12s;
+    line-height: 1.5;
+  }
+  .slide-edit-input:focus { border-color: var(--mid); background: white; }
+
+  .desc-edit-input {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--bg);
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    min-height: 40px;
+    line-height: 1.6;
+    transition: border 0.12s;
+  }
+  .desc-edit-input:focus { border-color: var(--mid); background: white; }
+
+  /* ── POST ICON BUTTONS ───────────────────────── */
+  .post-icon-btn {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    padding: 5px 6px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--mid);
+    transition: all 0.12s;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+  }
+  .post-icon-btn:hover { background: var(--panel); border-color: var(--border); color: var(--ink); }
+  .post-icon-btn.delete:hover { background: #FEE8E8; border-color: #F5C0C0; color: #C03030; }
+
+  /* ── RICH TEXT EDITOR ────────────────────────── */
+  .rte-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: white; }
+  .rte-toolbar {
+    display: flex;
+    gap: 2px;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .rte-btn {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.12s;
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+  .rte-btn:hover { background: var(--panel); color: var(--ink); border-color: var(--border); }
+  .rte-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .rte-sep { width: 1px; background: var(--border); margin: 2px 4px; }
+  .rte-content {
+    padding: 12px 14px;
+    min-height: 120px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1.75;
+    outline: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .rte-content:empty::before { content: attr(data-placeholder); color: var(--mid); }
+
+  .post-save-btn {
+    padding: 5px 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .post-save-btn:hover { background: var(--deep); }
+  .post-cancel-btn {
+    padding: 5px 10px;
+    background: none;
+    color: var(--mid);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .post-cancel-btn:hover { background: var(--panel); color: var(--ink); }
+
+  /* ── POST DESCRIPTION VIEW ───────────────────── */
+  .post-desc-view {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.75;
+    white-space: pre-line;
+    word-break: break-word;
+  }
+  .post-desc-view a { color: var(--accent); text-decoration: underline; word-break: break-all; }
+
+  /* ── DELETE MODAL ────────────────────────────── */
+  .del-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+    z-index: 500; display: flex; align-items: center; justify-content: center;
+  }
+  .del-modal {
+    background: white; border-radius: 14px; padding: 28px 32px;
+    max-width: 380px; width: 90%; box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+    text-align: center;
+  }
+  .del-modal h3 { font-size: 16px; font-weight: 600; color: var(--ink); margin: 0 0 10px; }
+  .del-modal p  { font-size: 13px; color: var(--mid); margin: 0 0 22px; line-height: 1.5; }
+  .del-modal-actions { display: flex; gap: 10px; justify-content: center; }
+  .del-modal-actions button { padding: 9px 22px; border-radius: 9px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.12s; }
+  .del-confirm { background: #C83030; color: white; }
+  .del-confirm:hover { background: #A02020; }
+  .del-cancel-m { background: var(--panel); color: var(--ink); }
+  .del-cancel-m:hover { background: var(--border); }
+
+
+  /* ── STATUS BADGE ────────────────────────────── */
+  .status-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .status-check input[type=checkbox] { display: none; }
+  .status-pill {
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border: 1px solid;
+    transition: all 0.15s;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .status-pill.done { background: #E6F4EA; color: #2D7A47; border-color: #A8D5B5; }
+  .status-pill.todo { background: var(--panel); color: var(--muted); border-color: var(--border); }
+
+  /* ── TYPE BADGE COLORS ───────────────────────── */
+  .type-reel   { background: #EAF0FB; color: #3A63C4; border-color: #B8CEF0; }
+  .type-video  { background: #F0EAF8; color: #6A3A9E; border-color: #CEB8E8; }
+  .type-carousel { background: #EAF6F0; color: #2D7A5E; border-color: #A8D5C4; }
+  .type-default { background: var(--panel); color: var(--muted); border-color: var(--border); }
+
+  /* ── EXPORT/IMPORT ──────────────────────────────── */
+  .header-actions { display:flex; align-items:center; gap:8px; }
+
+  .btn-hdr {
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.15s;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+  }
+  .btn-hdr:hover { background: var(--panel); border-color: var(--mid); color: var(--accent); }
+  .btn-hdr.import { border-color: var(--accent); color: var(--accent); }
+  .btn-hdr.import:hover { background: var(--accent); color: white; }
+
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    right: 36px;
+    z-index: 300;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 400;
+    background: var(--ink);
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .toast.show { opacity: 1; }
+
+  @media (max-width: 768px) {
+    /* ── HEADER ── */
+    header {
+      padding: 0 16px;
+      height: 52px;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+    }
+    .header-logo { height: 28px; }
+    .header-center { align-items: flex-start; }
+    .studio-name { font-size: 12px; letter-spacing: 0.02em; }
+    .studio-sub { display: none; }
+
+    /* ── TABS ── */
+    .tabs-bar { padding: 8px 12px; gap: 3px; }
+    .tab-btn { padding: 6px 10px; font-size: 11px; gap: 4px; }
+    .tab-btn svg { width: 12px; height: 12px; }
+    .tab-badge { font-size: 9px; padding: 1px 5px; }
+
+    /* ── MAIN ── */
+    main { padding: 16px 12px 80px; }
+
+    /* ── CARD ── */
+    .card-header { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
+    .card-body { padding: 14px 16px; }
+    .card-title { font-size: 16px; }
+    .card-icon { width: 26px; height: 26px; font-size: 13px; }
+
+    /* ── LINK LIST ── */
+    .link-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      padding: 10px 6px;
+    }
+    .link-item-left { flex-wrap: wrap; gap: 4px; width: 100%; }
+    .link-name { min-width: unset; font-size: 14px; }
+    .link-url { padding-left: 24px; width: 100%; }
+    .link-url a { font-size: 12px; word-break: break-all; display: block; }
+    .link-note { font-size: 11px; align-self: flex-start; }
+
+    /* ── BOOKING TABLE — горизонтальный скролл ── */
+    #body-booking { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .booking-table { min-width: 480px; }
+
+    /* ── HIGHLIGHTS ── */
+    .highlight-tag { font-size: 12px; padding: 6px 14px; }
+
+    /* ── CONTENT PLAN ── */
+    .drag-handle { display: none; }
+    .content-trigger { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
+    .content-trigger-left { flex: 1 1 100%; flex-wrap: wrap; gap: 6px; }
+    .content-main-title { font-size: 15px; flex: 1; min-width: 0; }
+    .content-type-badge { font-size: 10px; padding: 2px 9px; }
+    .content-arrow { display: none; }
+    /* actions row — прижаты вправо под заголовком */
+    .content-trigger > div:last-child { width: 100%; justify-content: flex-end; }
+    .content-body { padding: 12px 14px 16px; }
+    .slide-item { flex-direction: column; gap: 2px; padding: 8px 0; }
+    .slide-num { padding-top: 0; }
+
+    /* ── EDIT MODE ── */
+    .edit-row { flex-wrap: wrap; gap: 6px; padding: 10px 0; }
+    .edit-row .edit-input { flex: unset !important; width: 100%; min-width: 0; }
+    .edit-row .btn-del { align-self: flex-start; margin-left: auto; }
+    .btn-add-row { font-size: 12px; }
+
+    /* ── RTE ── */
+    .rte-toolbar { flex-wrap: wrap; gap: 2px; }
+
+    /* ── PRICE LIST ── */
+    .price-row { padding: 9px 4px; gap: 8px; }
+    .price-name { font-size: 13px; }
+    .price-val, .price-tbd { font-size: 13px; }
+    .price-note { display: block; margin-left: 0; margin-top: 2px; }
+
+    /* ── TOAST ── */
+    .toast { right: 16px; left: 16px; text-align: center; }
+
+    /* ── DELETE MODAL ── */
+    .del-modal { padding: 22px 18px; margin: 16px; }
+  }
+
+  /* ── PRICE LIST ──────────────────────────────── */
+  .price-section { margin-bottom: 32px; }
+  .price-section:last-child { margin-bottom: 0; }
+  .price-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 8px;
+    border-bottom: 1px solid var(--panel);
+    gap: 16px;
+  }
+  .price-row:last-child { border-bottom: none; }
+  .price-row:hover { background: var(--bg); border-radius: 8px; }
+  .price-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink);
+    flex: 1;
+  }
+  .price-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+  .price-val {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .price-tbd {
+    font-size: 13px;
+    color: var(--mid);
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <img src="/logo-ns.svg" class="header-logo" alt="Nail Studio Logo">
+  </div>
+  <div class="header-center">
+    <span class="studio-name">Nail Studio by Yulia Grunkovskaya</span>
+    <span class="studio-sub">Los Angeles · Project Dashboard</span>
+  </div>
+  <div class="header-right">
+    <div id="file-status" style="display:flex;align-items:center;gap:6px"></div>
+  </div>
+</header>
+<div class="toast" id="toast"></div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('instagram', this)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+    Instagram конкуренты <span class="tab-badge" id="badge-instagram">15</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('sites', this)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    Сайты конкурентов <span class="tab-badge" id="badge-sites">9</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('booking', this)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Букинг-системы <span class="tab-badge" id="badge-booking">7</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('highlights', this)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    Хайлайты <span class="tab-badge" id="badge-highlights">9</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('posts', this)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Контент план <span class="tab-badge" id="badge-posts">11</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('prices', this)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none"/></svg>
+    Прайс-лист
+  </button>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- INSTAGRAM -->
+  <div class="panel active" id="panel-instagram">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-icon">📸</div>
+          <span class="card-title">Instagram конкуренты</span>
+          <span class="card-count" id="count-instagram">15</span>
+        </div>
+        <button class="btn-edit" onclick="toggleEdit('instagram')">Редактировать</button>
+      </div>
+      <div class="card-body" id="body-instagram"></div>
+    </div>
+  </div>
+
+  <!-- SITES -->
+  <div class="panel" id="panel-sites">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-icon">🌐</div>
+          <span class="card-title">Сайты конкурентов</span>
+          <span class="card-count" id="count-sites">9</span>
+        </div>
+        <button class="btn-edit" onclick="toggleEdit('sites')">Редактировать</button>
+      </div>
+      <div class="card-body" id="body-sites"></div>
+    </div>
+  </div>
+
+  <!-- BOOKING -->
+  <div class="panel" id="panel-booking">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-icon">📅</div>
+          <span class="card-title">Букинг-системы</span>
+          <span class="card-count" id="count-booking">7</span>
+        </div>
+        <button class="btn-edit" onclick="toggleEdit('booking')">Редактировать</button>
+      </div>
+      <div class="card-body" id="body-booking"></div>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div class="panel" id="panel-highlights">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-icon">⭐</div>
+          <span class="card-title">Хайлайты (утверждённые)</span>
+          <span class="card-count" id="count-highlights">9</span>
+        </div>
+        <button class="btn-edit" onclick="toggleEdit('highlights')">Редактировать</button>
+      </div>
+      <div class="card-body" id="body-highlights"></div>
+    </div>
+  </div>
+
+  <!-- POSTS -->
+  <div class="panel" id="panel-posts">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-icon">📌</div>
+          <span class="card-title">Контент план</span>
+          <span class="card-count" id="count-posts">11</span>
+        </div>
+      </div>
+      <div class="card-body" id="body-posts"></div>
+    </div>
+  </div>
+
+  <!-- PRICES -->
+  <div class="panel" id="panel-prices">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-wrap">
+          <div class="card-icon">💅</div>
+          <span class="card-title">Прайс-лист</span>
+        </div>
+        <button class="btn-edit" onclick="toggleEdit('prices')">Редактировать</button>
+      </div>
+      <div class="card-body" id="body-prices"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const DEFAULTS = {
+  instagram: [
+    { name:'russianmanicure_nyc', url:'https://www.instagram.com/russianmanicure_nyc/', note:'~12K' },
+    { name:'beautystudio_by_veronika', url:'https://www.instagram.com/beautystudio_by_veronika/', note:'~10K' },
+    { name:'cretunails', url:'https://www.instagram.com/cretunails/', note:'~10K' },
+    { name:'euronails.art', url:'https://www.instagram.com/euronails.art/', note:'~10K' },
+    { name:'euphorianail_studio', url:'https://www.instagram.com/euphorianail_studio/', note:'~10K' },
+    { name:'mstudio_nyc', url:'https://www.instagram.com/mstudio_nyc/', note:'~9.6K' },
+    { name:'naomi_nails.nyc', url:'https://www.instagram.com/naomi_nails.nyc/', note:'NYC' },
+    { name:'lisa_kon_', url:'https://www.instagram.com/lisa_kon_/', note:'' },
+    { name:'glowlyusa', url:'https://www.instagram.com/glowlyusa/', note:'LA' },
+    { name:'studio_kristij', url:'https://www.instagram.com/studio_kristij/', note:'' },
+    { name:'nail_sunnyla', url:'https://www.instagram.com/nail_sunnyla/', note:'~72K · Beverly Hills' },
+    { name:'majolie.la', url:'https://www.instagram.com/majolie.la/', note:'LA' },
+    { name:'noorbeautique', url:'https://www.instagram.com/noorbeautique/', note:'~9.5K · West Hollywood' },
+    { name:'look.at.me.la', url:'https://www.instagram.com/look.at.me.la/', note:'~7K · West Hollywood' },
+    { name:'jl_beautystudio_nails', url:'https://www.instagram.com/jl_beautystudio_nails/', note:'Burbank/LA' },
+  ],
+  sites: [
+    { name:'Cretu Nails', url:'https://cretunails.com/' },
+    { name:'Euronails', url:'https://www.euronails.art/' },
+    { name:'Euphoria Nail Studio', url:'https://euphorianailstudio.glossgenius.com/' },
+    { name:'Naomi Nails NYC', url:'https://www.naominailnyc.com/' },
+    { name:'Lisa Kon', url:'https://www.lisakon.us/' },
+    { name:'Glowly USA', url:'https://glowlyusa.com/' },
+    { name:'Nail Sunny LA', url:'https://nailsunny.us/' },
+    { name:'Look At Me', url:'https://www.lookat-me.us/' },
+    { name:'JL Beauty Studio', url:'https://jlbeauty.studio/' },
+  ],
+  booking: [
+    { platform:'Vagaro', url:'https://www.vagaro.com', users:'russianmanicure, cretunails' },
+    { platform:'Square', url:'https://squareup.com', users:'2 студии' },
+    { platform:'Dikidi', url:'https://dikidi.net', users:'отдельная студия' },
+    { platform:'Zenoti', url:'https://glowlyusa.zenoti.com', users:'Glowly USA' },
+    { platform:'Alteg.io', url:'https://alteg.io', users:'отдельная студия' },
+    { platform:'Fresha', url:'https://www.fresha.com', users:'Noor Beautique' },
+    { platform:'GlossGenius', url:'https://glossgenius.com', users:'Euphoria Nail Studio' },
+  ],
+  highlights: ['Best French','Location','Reviews','Prices','Opening','Before / After','Owner Awards','Yulia','Sia'],
+  posts: [
+    {
+      title:'Non-toxic', type:'Карусель · 7 слайдов', published:false,
+      description:'Закреп №1. Объясняем почему наши материалы безопаснее — без HEMA и TPO. Закрывает страх вредной химии, строим доверие через прозрачность.',
+      slides:[
+        { title:'Обложка', text:'"Non-toxic" — это не просто слово. Сегодня почти каждая студия говорит о безопасности. Но мало кто действительно использует качественные материалы. Не всё, что выглядит красиво — действительно безопасно.' },
+        { title:'', text:'Мы пошли другим путём. Мы используем только высококачественные европейские материалы без HEMA и TPO.' },
+        { title:'', text:'Чище состав — больше комфорта. Покрытие должно выглядеть идеально и ощущаться спокойно в носке.' },
+        { title:'', text:'Красиво — это ещё не результат. Важно не только ЧТО наносится, но и КАК: грамотная техника и архитектура, аккуратная работа, контроль каждого этапа, чистый процесс.' },
+        { title:'', text:'Стерильность — это база. Чистые инструменты и строгий стерильный подход — основа доверия к мастеру и салону.' },
+        { title:'', text:'Техника мастера — ключ к результату. Наши мастера используют современные техники. Ваши ногти носятся 3–4 недели без трещин, сколов и отслоек.' },
+        { title:'Финал', text:'Запишитесь на процедуру, где красота идёт вместе с заботой и безопасностью.' },
+      ]
+    },
+    {
+      title:'Наши услуги', type:'Карусель · 7 слайдов', published:false,
+      description:'Закреп №2. Полный прайс и список услуг. Снимает вопрос «а что вы вообще делаете» — конверсионный пост для новых подписчиков.',
+      slides:[
+        { title:'Обложка', text:'Наши услуги' },
+        { title:'Маникюр', text:'Классический · Гелевое покрытие · Укрепление натуральных ногтей · Мужской маникюр' },
+        { title:'Наращивание', text:'Разная длина и формы · Салонный миндаль · Квадрат · Френч' },
+        { title:'Французский маникюр', text:'Идеально ровные линии · Чистая архитектура ногтя · Аккуратный, носибельный результат' },
+        { title:'Дизайн', text:'3D-дизайн · Камни Swarovski · Инкрустации и текстуры · Омбре · Рисованный дизайн' },
+        { title:'Почему выбирают нас', text:'Огромная коллекция оттенков · От 1 часа без потери качества · Материалы без HEMA и TPO · Результат 3–4 недели · Стандарт стерилизации · Внимание к деталям' },
+        { title:'Финал', text:'📍 7301 Topanga Canyon Blvd, 2 этаж, Suite 203 · DM / сайт / 📞 +1 (805) 624-3442' },
+      ]
+    },
+    {
+      title:'Как нас найти', type:'Видео', published:false,
+      description:'Закреп №3. Видео с адресом и навигацией. Снимает вопрос «где это?» — особенно важно для Canoga Park, который не знают.',
+      slides:[
+        { title:'Текст на видео', text:'Как нас найти? 📍' },
+        { title:'', text:'Nail Studio by Yulia Grunkovskaya' },
+        { title:'', text:'Canoga Park, CA' },
+        { title:'', text:'📍 7301 Topanga Canyon Blvd, 2 этаж, Suite 203' },
+      ]
+    },
+    {
+      title:'Рилс со стройкой', type:'Reel · под музыку', published:false,
+      description:'Кадры неготового помещения под музыку. Материал уже есть — взять из него. Показывает процесс создания студии, создаёт ожидание и вовлечённость.',
+      slides:[
+        { title:'Материал', text:'Есть готовые кадры неготового помещения — взять оттуда' },
+        { title:'Формат', text:'Монтаж под музыку, кадры строящегося пространства' },
+      ]
+    },
+    {
+      title:'Рилс — Юля идёт по помещению', type:'Reel · под музыку', published:false,
+      description:'Юля ходит по помещению и смотрит по сторонам. Материал уже есть — взять готовый рилс. Личный бренд, атмосфера, предвкушение.',
+      slides:[
+        { title:'Материал', text:'Есть готовый рилс — взять его' },
+        { title:'Формат', text:'Монтаж под музыку, Юля осматривает пространство' },
+      ]
+    },
+    {
+      title:'Рилс — Coming Soon', type:'Reel · под музыку', published:false,
+      description:'Coming Soon — атмосферный анонс открытия. Материал есть — взять готовый рилс. Создаёт ожидание, набирает аудиторию до открытия.',
+      slides:[
+        { title:'Материал', text:'Есть готовый рилс — взять его' },
+        { title:'Формат', text:'Kaминг сун под музыку' },
+      ]
+    },
+    {
+      title:'Рилс — This Vibes', type:'Reel · атмосфера', published:false,
+      description:'Атмосферный рилс в стиле «this vibes». Пример: https://www.instagram.com/reel/DSyDc79ieG7/',
+      slides:[
+        { title:'Пример', text:'https://www.instagram.com/reel/DSyDc79ieG7/?igsh=NTc4MTIwNjQ2YQ==' },
+        { title:'Формат', text:'Атмосфера студии, эстетика, настроение — без слов' },
+      ]
+    },
+    {
+      title:'Рилс — отдаляющаяся камера 0.5x', type:'Reel · трюк с камерой', published:false,
+      description:'Рилс где камера отдаляется на 0.5x. Пример: https://www.instagram.com/reel/DUi4IqKCF0d/',
+      slides:[
+        { title:'Пример', text:'https://www.instagram.com/reel/DUi4IqKCF0d/?igsh=NTc4MTIwNjQ2YQ==' },
+        { title:'Формат', text:'Съёмка с отдалением камеры — reveal эффект' },
+      ]
+    },
+    {
+      title:'Рилс — быстрые кадры стройки', type:'Reel · динамичный монтаж', published:false,
+      description:'Процессы стройки с быстрыми переключениями кадров. Пример: https://www.instagram.com/reel/DW3yN4PDDX8/',
+      slides:[
+        { title:'Пример', text:'https://www.instagram.com/reel/DW3yN4PDDX8/?igsh=NTc4MTIwNjQ2YQ==' },
+        { title:'Формат', text:'Быстрый монтаж кадров строительства под бит' },
+      ]
+    },
+    {
+      title:'Рилс — монтаж со съёмок с Настей', type:'Reel · lifestyle', published:false,
+      description:'Монтаж из материала со съёмок с Настей. Пример: https://www.instagram.com/reel/DT3GDDBAkj5/',
+      slides:[
+        { title:'Пример', text:'https://www.instagram.com/reel/DT3GDDBAkj5/?igsh=NTc4MTIwNjQ2YQ==' },
+        { title:'Материал', text:'Отснятый материал со съёмок с Настей — смонтировать' },
+      ]
+    },
+    {
+      title:'Рилс — стерилизация', type:'Reel', published:false,
+      description:'как часто вы изучаете стерилизацию своего мастера',
+      slides:[
+        { title:'', text:'как часто вы изучаете стерилизацию своего мастера' },
+      ]
+    },
+  ]
+};
+
+// ── PRICE LIST DATA ───────────────────────────────────────────
+const PRICES = [
+  { section:'Manicure', items:[
+    { name:'Strong Gel Manicure', note:'dry manicure with gel polish' },
+    { name:'Dry Manicure', note:'no polish' },
+  ]},
+  { section:'Nail Extension (Poly Gel | Hard Gel)', items:[
+    { name:'Short' }, { name:'Medium' }, { name:'Long' }, { name:'Extra Long' },
+  ]},
+  { section:'Extension Fill (Poly Gel | Hard Gel)', items:[
+    { name:'Short' }, { name:'Medium' }, { name:'Long' }, { name:'Extra Long' },
+  ]},
+  { section:'Pedicure', items:[
+    { name:'Dry Pedicure', note:'no polish' },
+    { name:'Gel Pedicure' },
+    { name:'Complicated Feet', price:'+$40' },
+  ]},
+  { section:'Repair / Removal', items:[
+    { name:'Gel Removal Only', note:'no new set' },
+    { name:'Removal Acrylic / Gel-X / Dip Powder', price:'$40' },
+    { name:'One Nail Repair' },
+    { name:'One Nail Extension' },
+  ]},
+  { section:'Design', items:[
+    { name:'French, Ombre, Chrome Powder', price:'from $20' },
+    { name:'Nail Stickers, Stamping', note:'per nail', price:'$5' },
+    { name:'Nail Art', note:'per nail', price:'from $10' },
+    { name:'Swarovski Crystal Design', note:'original crystals' },
+    { name:'Cat Eye', price:'$10' },
+  ]},
+];
+
+// ── SUPABASE ──────────────────────────────────────────────────
+const SUPA_URL = 'https://lslfserpvcrsjypgyvzp.supabase.co';
+const SUPA_KEY = 'sb_publishable_eLh4_k5rzp57sP4n26UOtg_Fh-njVeC';
+const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+let saveTimer = null;
+
+function fullState() {
+  return {
+    instagram: state.instagram,
+    sites:     state.sites,
+    booking:   state.booking,
+    highlights:state.highlights,
+    posts:     state.posts,
+    prices:    state.prices,
+  };
+}
+
+function applyData(data) {
+  if (data.instagram) state.instagram = data.instagram;
+  if (data.sites)     state.sites     = data.sites;
+  if (data.booking)   state.booking   = data.booking;
+  if (data.highlights)state.highlights= data.highlights;
+  if (data.posts)     state.posts     = data.posts;
+  if (data.prices)    state.prices    = data.prices;
+}
+
+async function loadFromDB() {
+  try {
+    const { data, error } = await sb
+      .from('dashboard_data')
+      .select('data')
+      .eq('id', 'main')
+      .single();
+    if (error) throw error;
+    if (data?.data && Object.keys(data.data).length > 0) {
+      applyData(data.data);
+      renderAll();
+    } else {
+      await saveToDB();
+    }
+    updateDbStatus(true);
+  } catch(e) {
+    console.error('DB load error', e);
+    updateDbStatus(false);
+  }
+}
+
+async function saveToDB() {
+  try {
+    const { error } = await sb
+      .from('dashboard_data')
+      .upsert({ id: 'main', data: fullState(), updated_at: new Date().toISOString() });
+    if (error) throw error;
+    showToast('✓ Сохранено');
+  } catch(e) {
+    console.error('DB save error', e);
+    showToast('⚠ Ошибка сохранения');
+  }
+}
+
+function save(key) {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveToDB, 600);
+}
+
+function updateDbStatus(ok) {
+  const el = document.getElementById('file-status');
+  if (!el) return;
+  el.innerHTML = ok
+    ? `<span style="color:#2D7A47;font-size:11px;font-weight:500">● Supabase</span>`
+    : `<span style="color:#C07070;font-size:11px">● DB недоступна</span>`;
+}
+
+
+// ── TABS ──────────────────────────────────────────────────────
+function switchTab(key, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-'+key).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function updateBadge(key, count) {
+  const b = document.getElementById('badge-'+key);
+  if (b) b.textContent = count;
+  const c = document.getElementById('count-'+key);
+  if (c) c.textContent = count;
+}
+
+function renderInstagram() {
+  updateBadge('instagram', state.instagram.length);
+  const body = document.getElementById('body-instagram');
+  if (state.editing.instagram) {
+    body.innerHTML = state.instagram.map((item,i) => `
+      <div class="edit-row">
+        <input class="edit-input" style="flex:1.2" value="${esc(item.name)}" placeholder="Аккаунт" oninput="state.instagram[${i}].name=this.value">
+        <input class="edit-input" style="flex:2" value="${esc(item.url)}" placeholder="URL" oninput="state.instagram[${i}].url=this.value">
+        <input class="edit-input" style="flex:0.7" value="${esc(item.note||'')}" placeholder="Заметка" oninput="state.instagram[${i}].note=this.value">
+        <button class="btn-del" onclick="delItem('instagram',${i})">×</button>
+      </div>`).join('') +
+      `<button class="btn-add-row" onclick="addItem('instagram')">+ Добавить аккаунт</button>`;
+  } else {
+    body.innerHTML = `<div class="link-list">` +
+      state.instagram.map((item,i) => `
+        <div class="link-item">
+          <div class="link-item-left">
+            <span class="link-num">${i+1}</span>
+            <span class="link-name">@${esc(item.name)}</span>
+            <span class="link-url"><a href="${esc(item.url)}" target="_blank">${esc(item.url)}</a></span>
+          </div>
+          ${item.note ? `<span class="link-note">${esc(item.note)}</span>` : ''}
+        </div>`).join('') + `</div>`;
+  }
+}
+
+function renderSites() {
+  updateBadge('sites', state.sites.length);
+  const body = document.getElementById('body-sites');
+  if (state.editing.sites) {
+    body.innerHTML = state.sites.map((item,i) => `
+      <div class="edit-row">
+        <input class="edit-input" style="flex:1" value="${esc(item.name)}" placeholder="Название" oninput="state.sites[${i}].name=this.value">
+        <input class="edit-input" style="flex:2" value="${esc(item.url)}" placeholder="URL" oninput="state.sites[${i}].url=this.value">
+        <button class="btn-del" onclick="delItem('sites',${i})">×</button>
+      </div>`).join('') +
+      `<button class="btn-add-row" onclick="addItem('sites')">+ Добавить сайт</button>`;
+  } else {
+    body.innerHTML = `<div class="link-list">` +
+      state.sites.map((item,i) => `
+        <div class="link-item">
+          <div class="link-item-left">
+            <span class="link-num">${i+1}</span>
+            <span class="link-name">${esc(item.name)}</span>
+            <span class="link-url"><a href="${esc(item.url)}" target="_blank">${esc(item.url)}</a></span>
+          </div>
+        </div>`).join('') + `</div>`;
+  }
+}
+
+function renderBooking() {
+  updateBadge('booking', state.booking.length);
+  const body = document.getElementById('body-booking');
+  if (state.editing.booking) {
+    body.innerHTML = state.booking.map((item,i) => `
+      <div class="edit-row">
+        <input class="edit-input" style="flex:0.8" value="${esc(item.platform)}" placeholder="Платформа" oninput="state.booking[${i}].platform=this.value">
+        <input class="edit-input" style="flex:1.5" value="${esc(item.url)}" placeholder="URL" oninput="state.booking[${i}].url=this.value">
+        <input class="edit-input" style="flex:1.2" value="${esc(item.users)}" placeholder="Кто использует" oninput="state.booking[${i}].users=this.value">
+        <button class="btn-del" onclick="delItem('booking',${i})">×</button>
+      </div>`).join('') +
+      `<button class="btn-add-row" onclick="addItem('booking')">+ Добавить платформу</button>`;
+  } else {
+    body.innerHTML = `<table class="booking-table">
+      <thead><tr><th>Платформа</th><th>Ссылка</th><th>Кто использует</th></tr></thead>
+      <tbody>` +
+      state.booking.map(item => `
+        <tr>
+          <td class="booking-platform">${esc(item.platform)}</td>
+          <td class="booking-link"><a href="${esc(item.url)}" target="_blank">${esc(item.url)}</a></td>
+          <td style="color:var(--muted);font-size:13px">${esc(item.users)}</td>
+        </tr>`).join('') +
+      `</tbody></table>`;
+  }
+}
+
+function renderHighlights() {
+  updateBadge('highlights', state.highlights.length);
+  const body = document.getElementById('body-highlights');
+  if (state.editing.highlights) {
+    body.innerHTML = `<div class="highlights-edit">` +
+      state.highlights.map((h,i) => `
+        <div class="highlight-edit-item">
+          <input value="${esc(h)}" oninput="state.highlights[${i}]=this.value" style="width:${Math.max(60,h.length*8)}px">
+          <button class="btn-del" onclick="delItem('highlights',${i})">×</button>
+        </div>`).join('') +
+      `</div><button class="btn-add-row" style="margin-top:12px" onclick="addItem('highlights')">+ Добавить хайлайт</button>`;
+  } else {
+    body.innerHTML = `<div class="highlights-wrap">` +
+      state.highlights.map(h => `<span class="highlight-tag">${esc(h)}</span>`).join('') +
+      `</div>`;
+  }
+}
+
+function linkify(str) {
+  if (!str) return '';
+  return esc(str).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" style="color:var(--accent);text-decoration:underline;word-break:break-all">$1</a>');
+}
+
+function linkifyPreserve(str) {
+  if (!str) return '';
+  return str.split('\n').map(line =>
+    esc(line).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>')
+  ).join('\n');
+}
+
+function normalizeType(type) {
+  const t = (type||'').toLowerCase();
+  if (t.includes('рилс') || t.includes('reel')) return 'Рилс';
+  if (t.includes('карусель') || t.includes('carousel')) return 'Карусель';
+  return 'Пост';
+}
+
+function typeBadgeClass(type) {
+  const n = normalizeType(type).toLowerCase();
+  return 'badge-' + n;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+function initAutoResize() {
+  document.querySelectorAll('.desc-edit-input, .slide-edit-input').forEach(el => {
+    autoResize(el);
+    el.addEventListener('input', () => autoResize(el));
+  });
+}
+
+function renderPosts() {
+  updateBadge('posts', state.posts.length);
+  const body = document.getElementById('body-posts');
+
+  body.innerHTML = `<div class="content-list">` +
+    state.posts.map((post, pi) => {
+      const isEditing = state.editingPost === pi;
+      const isOpen    = !!state.openPosts[pi] || isEditing;
+
+      if (isEditing) {
+        // ── PER-POST EDIT MODE ──
+        return `
+        <div class="content-item open" style="border-left:3px solid var(--accent)">
+          <div class="content-trigger" style="cursor:default;background:var(--bg)">
+            <div class="content-trigger-left" style="gap:10px;flex-wrap:wrap;width:100%">
+              <span class="content-index" style="color:var(--mid)">${pi+1}</span>
+              <input class="edit-input" value="${esc(post.title)}" placeholder="Тема поста"
+                oninput="state.posts[${pi}].title=this.value"
+                style="font-weight:500;font-size:14px;flex:1;min-width:160px">
+              <select class="edit-input" onchange="state.posts[${pi}].type=this.value"
+                style="font-size:13px;max-width:130px;cursor:pointer">
+                ${['Пост','Рилс','Карусель'].map(t=>`<option value="${t}" ${normalizeType(post.type)===t?'selected':''}>${t}</option>`).join('')}
+              </select>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+              <button class="post-save-btn" onclick="savePost(${pi})">✓ Сохранить</button>
+              <button class="post-cancel-btn" onclick="cancelEditPost()">✕</button>
+            </div>
+          </div>
+          <div class="content-body" style="display:block">
+            <div class="rte-wrap">
+              <div class="rte-toolbar">
+                <button class="rte-btn" onmousedown="event.preventDefault();document.execCommand('bold')" title="Жирный (⌘B)"><b>B</b></button>
+                <button class="rte-btn" onmousedown="event.preventDefault();document.execCommand('italic')" title="Курсив (⌘I)"><i>I</i></button>
+                <button class="rte-btn" onmousedown="event.preventDefault();document.execCommand('underline')" title="Подчёркнутый (⌘U)"><u>U</u></button>
+                <div class="rte-sep"></div>
+                <button class="rte-btn" onmousedown="event.preventDefault();document.execCommand('removeFormat')" title="Убрать форматирование" style="font-family:sans-serif;font-weight:400">✕ формат</button>
+                ${(post.slides && post.slides.filter(s=>s.text).length) ? `<div class="rte-sep"></div><button class="rte-btn" style="font-family:sans-serif;font-weight:400;font-size:11px" onmousedown="event.preventDefault();resetToSlides(${pi})" title="Сбросить и собрать из слайдов">↺ сбросить</button>` : ''}
+              </div>
+              <div class="rte-content" contenteditable="true"
+                data-placeholder="Описание, текст поста, ссылки..."
+                oninput="onRTEInput(this,${pi})"
+                id="rte-${pi}">${postContentForRTE(post)}</div>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      // ── VIEW MODE ──
+      return `
+      <div class="content-item${isOpen?' open':''}" id="post-item-${pi}" draggable="true"
+        style="border-left:3px solid ${post.published?'#2D7A47':'var(--border)'}"
+        ondragstart="onDragStart(event,${pi})"
+        ondragover="onDragOver(event,${pi})"
+        ondragleave="onDragLeave(${pi})"
+        ondrop="onDrop(event,${pi})"
+        ondragend="onDragEnd()">
+        <div class="content-trigger" onclick="togglePost(${pi})">
+          <div class="content-trigger-left">
+            <span class="drag-handle" onclick="event.stopPropagation()" title="Перетащить">⠿</span>
+            <span class="content-index">${pi+1}</span>
+            <span class="content-main-title">${esc(post.title)}</span>
+            <span class="content-type-badge ${typeBadgeClass(post.type)}">${normalizeType(post.type)}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <button class="post-icon-btn" onclick="event.stopPropagation();startEditPost(${pi})" title="Редактировать">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="post-icon-btn delete" onclick="event.stopPropagation();confirmDeletePost(${pi})" title="Удалить">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+            <label class="status-check" onclick="event.stopPropagation()">
+              <input type="checkbox" ${post.published?'checked':''} onchange="togglePublished(${pi})">
+              <span class="status-pill ${post.published?'done':'todo'}">${post.published?'✓ Опубликован':'· В очереди'}</span>
+            </label>
+            <span class="content-arrow">▶</span>
+          </div>
+        </div>
+        <div class="content-body">
+          ${renderPostContent(post)}
+        </div>
+      </div>`;
+    }).join('') +
+    `</div>
+    <button class="btn-add-row" style="margin-top:12px" onclick="addPost()">+ Добавить пост</button>`;
+
+  initAutoResize();
+}
+
+// Нормализует HTML из contenteditable → чистый HTML с <br> вместо <div>/<p>
+function normalizeRTE(el) {
+  const clone = el.cloneNode(true);
+  // Каждый <div>/<p> → его содержимое + <br> перед ним
+  clone.querySelectorAll('div, p').forEach(block => {
+    block.before(document.createElement('br'));
+    while (block.firstChild) block.before(block.firstChild);
+    block.remove();
+  });
+  let html = clone.innerHTML;
+  // Убираем лишние <br> в начале/конце
+  html = html.replace(/^(\s*<br\s*\/?>)+/gi, '').replace(/(\s*<br\s*\/?>)+\s*$/gi, '');
+  // Не более двух <br> подряд
+  html = html.replace(/(<br\s*\/?>(\s*)){3,}/gi, '<br><br>');
+  return html.trim();
+}
+
+// Возвращает контент поста для вставки в RTE (и для view mode)
+function postContentForRTE(post) {
+  let c = post.description || '';
+  const slides = post.slides && post.slides.filter(s => s.text);
+  const hasSlides = slides && slides.length > 0;
+
+  // Авто-миграция: если описание не содержит <br> (битый старый формат),
+  // но есть слайды — берём контент из слайдов
+  if (c && !/<br/i.test(c) && hasSlides) {
+    c = ''; // сбрасываем, будем брать из слайдов
+  }
+
+  // Нет описания → строим из слайдов
+  if (!c && hasSlides) {
+    return slides.map((s, i) => esc(`${i+1}. ${s.text}`)).join('<br><br>');
+  }
+
+  if (!c) return '';
+
+  // Plain text (нет тегов) → конвертируем \n в <br>
+  if (!/<[a-z]/i.test(c)) {
+    return c.split('\n').map(line => esc(line)).join('<br>');
+  }
+
+  // HTML с <div>/<p> (старый формат contenteditable) → нормализуем
+  if (/<div|<p/i.test(c)) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = c;
+    return normalizeRTE(tmp);
+  }
+
+  // Уже чистый HTML с <br> — возвращаем как есть
+  return c;
+}
+
+// Для view mode: всегда рендерим как HTML, <br> даёт переносы
+function linkifyHTML(html) {
+  // linkify plain-text URLs that are NOT already inside an href/src attribute
+  return html.replace(/(^|[\s>])(https?:\/\/[^\s<"'&]+)/g,
+    '$1<a href="$2" target="_blank" style="color:var(--accent);text-decoration:underline;word-break:break-all">$2</a>');
+}
+
+function renderPostContent(post) {
+  const c = postContentForRTE(post);
+  if (!c) return '<div style="color:var(--mid);font-size:13px">Нет описания</div>';
+  return `<div class="post-desc-view">${linkifyHTML(c)}</div>`;
+}
+
+// Вызывается из oninput RTE — нормализует и сохраняет
+function onRTEInput(el, pi) {
+  state.posts[pi].description = normalizeRTE(el);
+}
+
+function togglePublished(pi) {
+  state.posts[pi].published = !state.posts[pi].published;
+  save('posts');
+  renderPosts();
+}
+
+function togglePost(pi) {
+  if (state.editingPost === pi) return;
+  state.openPosts[pi] = !state.openPosts[pi];
+  renderPosts();
+}
+
+function startEditPost(pi) {
+  state.editingPost = pi;
+  state.openPosts[pi] = true;
+  // postContentForRTE сам разберётся со слайдами и форматом
+  renderPosts();
+}
+
+function resetToSlides(pi) {
+  state.posts[pi].description = '';
+  const rte = document.getElementById('rte-' + pi);
+  if (rte) {
+    const slides = state.posts[pi].slides && state.posts[pi].slides.filter(s => s.text);
+    rte.innerHTML = slides ? slides.map((s,i) => esc(`${i+1}. ${s.text}`)).join('<br><br>') : '';
+    state.posts[pi].description = normalizeRTE(rte);
+  }
+}
+
+function cancelEditPost() {
+  state.editingPost = null;
+  renderPosts();
+}
+
+function savePost(pi) {
+  // Если при открытии редактора было авто-восстановление из слайдов —
+  // записываем нормализованный контент обратно в description
+  const rte = document.getElementById('rte-' + pi);
+  if (rte) {
+    state.posts[pi].description = normalizeRTE(rte);
+  }
+  state.editingPost = null;
+  save('posts');
+  renderPosts();
+}
+
+function confirmDeletePost(pi) {
+  const title = esc(state.posts[pi].title);
+  const overlay = document.createElement('div');
+  overlay.className = 'del-modal-overlay';
+  overlay.innerHTML = `
+    <div class="del-modal">
+      <h3>Удалить пост?</h3>
+      <p>«${title}» будет удалён без возможности восстановления.</p>
+      <div class="del-modal-actions">
+        <button class="del-cancel-m" onclick="this.closest('.del-modal-overlay').remove()">Отмена</button>
+        <button class="del-confirm" onclick="deletePost(${pi});this.closest('.del-modal-overlay').remove()">Удалить</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function deletePost(pi) {
+  state.posts.splice(pi, 1);
+  if (state.editingPost === pi) state.editingPost = null;
+  // Обновляем openPosts (сдвигаем индексы)
+  const newOpen = {};
+  Object.keys(state.openPosts).forEach(k => {
+    const idx = parseInt(k);
+    if (idx < pi) newOpen[idx] = state.openPosts[k];
+    else if (idx > pi) newOpen[idx-1] = state.openPosts[k];
+  });
+  state.openPosts = newOpen;
+  save('posts');
+  renderPosts();
+}
+
+function addPost() {
+  state.posts.push({ title:'Новый пост', type:'Карусель', description:'', slides:[] });
+  const pi = state.posts.length - 1;
+  state.editingPost = pi;
+  renderPosts();
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────
+const renders = { instagram:renderInstagram, sites:renderSites, booking:renderBooking, highlights:renderHighlights, posts:renderPosts, prices:renderPrices };
+
+function toggleEdit(key) {
+  const btn = document.querySelector(`#panel-${key} .btn-edit, #panel-${key} .btn-save`);
+  if (state.editing[key]) {
+    save(key);
+    state.editing[key] = false;
+    if (btn) { btn.className = 'btn-edit'; btn.textContent = 'Редактировать'; }
+  } else {
+    state.editing[key] = true;
+    if (btn) { btn.className = 'btn-save'; btn.textContent = 'Сохранить'; }
+  }
+  renders[key]();
+}
+
+
+
+function delItem(key, i) { state[key].splice(i,1); renders[key](); }
+
+function addItem(key) {
+  if (key==='instagram') state.instagram.push({ name:'', url:'', note:'' });
+  else if (key==='sites') state.sites.push({ name:'', url:'' });
+  else if (key==='booking') state.booking.push({ platform:'', url:'', users:'' });
+  else if (key==='highlights') state.highlights.push('');
+  else if (key==='posts') addPost();
+  renders[key]();
+}
+
+function addSlide(pi) { state.posts[pi].slides.push({ title:'', text:'' }); renderPosts(); }
+function delSlide(pi, si) { state.posts[pi].slides.splice(si,1); renderPosts(); }
+
+// ── DRAG & DROP ───────────────────────────────────────────────
+let dragSrc = null;
+
+function onDragStart(e, pi) {
+  dragSrc = pi;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', pi);
+  setTimeout(() => {
+    const el = document.getElementById('post-item-' + pi);
+    if (el) el.classList.add('dragging');
+  }, 0);
+}
+
+function onDragOver(e, pi) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.content-item').forEach(el => el.classList.remove('drag-over'));
+  const el = document.getElementById('post-item-' + pi);
+  if (el && dragSrc !== pi) el.classList.add('drag-over');
+}
+
+function onDragLeave(pi) {
+  const el = document.getElementById('post-item-' + pi);
+  if (el) el.classList.remove('drag-over');
+}
+
+function onDrop(e, pi) {
+  e.preventDefault();
+  document.querySelectorAll('.content-item').forEach(el => {
+    el.classList.remove('drag-over');
+    el.classList.remove('dragging');
+  });
+  if (dragSrc === null || dragSrc === pi) return;
+  const moved = state.posts.splice(dragSrc, 1)[0];
+  state.posts.splice(pi, 0, moved);
+  save('posts');
+  dragSrc = null;
+  renderPosts();
+}
+
+function onDragEnd() {
+  document.querySelectorAll('.content-item').forEach(el => {
+    el.classList.remove('dragging');
+    el.classList.remove('drag-over');
+  });
+  dragSrc = null;
+}
+
+function renderPrices() {
+  const body = document.getElementById('body-prices');
+  if (!body) return;
+  if (state.editing.prices) {
+    body.innerHTML = state.prices.map((sec, si) => `
+      <div class="price-section" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <input class="edit-input" style="font-weight:600;font-size:13px;letter-spacing:0.05em;flex:1" value="${esc(sec.section)}" placeholder="Название раздела" oninput="state.prices[${si}].section=this.value">
+          <button class="btn-del" onclick="delPriceSection(${si})" title="Удалить раздел">×</button>
+        </div>
+        ${sec.items.map((item, ii) => `
+          <div class="edit-row">
+            <input class="edit-input" style="flex:2" value="${esc(item.name)}" placeholder="Название" oninput="state.prices[${si}].items[${ii}].name=this.value">
+            <input class="edit-input" style="flex:1" value="${esc(item.note||'')}" placeholder="Примечание" oninput="state.prices[${si}].items[${ii}].note=this.value">
+            <input class="edit-input" style="flex:0.6;max-width:100px" value="${esc(item.price||'')}" placeholder="Цена" oninput="state.prices[${si}].items[${ii}].price=this.value">
+            <button class="btn-del" onclick="delPriceItem(${si},${ii})">×</button>
+          </div>`).join('')}
+        <button class="btn-add-row" style="margin-top:8px" onclick="addPriceItem(${si})">+ Добавить позицию</button>
+      </div>`).join('') +
+      `<button class="btn-add-row" style="margin-top:4px" onclick="addPriceSection()">+ Добавить раздел</button>`;
+  } else {
+    body.innerHTML = state.prices.map(sec => `
+      <div class="price-section">
+        <div class="price-section-title">${esc(sec.section)}</div>
+        ${sec.items.map(item => `
+          <div class="price-row">
+            <span class="price-name">${esc(item.name)}${item.note ? `<span class="price-note">— ${esc(item.note)}</span>` : ''}</span>
+            ${item.price ? `<span class="price-val">${esc(item.price)}</span>` : `<span class="price-tbd">—</span>`}
+          </div>`).join('')}
+      </div>`).join('');
+  }
+}
+
+function delPriceSection(si) { state.prices.splice(si,1); renderPrices(); }
+function delPriceItem(si, ii) { state.prices[si].items.splice(ii,1); renderPrices(); }
+function addPriceItem(si) { state.prices[si].items.push({ name:'', note:'', price:'' }); renderPrices(); }
+function addPriceSection() { state.prices.push({ section:'Новый раздел', items:[] }); renderPrices(); }
+
+// ── EXPORT / IMPORT ───────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function exportData() {
+  const data = {
+    _version: 1,
+    _exported: new Date().toISOString(),
+    instagram: state.instagram,
+    sites: state.sites,
+    booking: state.booking,
+    highlights: state.highlights,
+    posts: state.posts,
+    prices: state.prices,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `nail-studio-dashboard-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Данные экспортированы');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.instagram) { state.instagram = data.instagram; save('instagram'); }
+      if (data.sites)     { state.sites     = data.sites;     save('sites'); }
+      if (data.booking)   { state.booking   = data.booking;   save('booking'); }
+      if (data.highlights){ state.highlights= data.highlights;save('highlights'); }
+      if (data.posts)     { state.posts     = data.posts;     save('posts'); }
+      if (data.prices)    { state.prices    = data.prices;    save('prices'); }
+      renderInstagram(); renderSites(); renderBooking(); renderHighlights(); renderPosts(); renderPrices();
+      showToast('✓ Данные импортированы — ' + (data.posts?.length||0) + ' постов');
+    } catch(err) {
+      showToast('⚠ Ошибка чтения файла');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// Авто-сохранение при закрытии вкладки
+
+// ── INIT ──────────────────────────────────────────────────────
+function renderAll() {
+  renderInstagram(); renderSites(); renderBooking(); renderHighlights(); renderPosts(); renderPrices();
+}
+
+const state = {
+  instagram:   JSON.parse(JSON.stringify(DEFAULTS.instagram)),
+  sites:       JSON.parse(JSON.stringify(DEFAULTS.sites)),
+  booking:     JSON.parse(JSON.stringify(DEFAULTS.booking)),
+  highlights:  JSON.parse(JSON.stringify(DEFAULTS.highlights)),
+  posts:       JSON.parse(JSON.stringify(DEFAULTS.posts)),
+  prices:      JSON.parse(JSON.stringify(PRICES)),
+  editing:     {},
+  openPosts:   {},
+  editingPost: null,
+};
+
+renderAll();
+loadFromDB(); // загружаем из Supabase, перерисовываем
+
+</script>
+</body>
+</html>

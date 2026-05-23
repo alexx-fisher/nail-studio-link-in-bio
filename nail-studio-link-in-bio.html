@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nail Studio by Yulia Grunkovskaya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: #161311;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* ── PHONE SHELL ── */
+    .phone {
+      width: 390px;
+      background: #161311;
+      overflow: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 459px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      width: 553px;
+      height: 982px;
+      right: -59px;
+      top: -245px;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* dark gradient overlay so text reads well */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(22, 19, 17, 0.28) 0%,
+        rgba(22, 19, 17, 0.10) 30%,
+        rgba(22, 19, 17, 0.20) 65%,
+        rgba(22, 19, 17, 0.55) 100%
+      );
+    }
+
+    /* logo + title block */
+    .hero-logo-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 66px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-logo {
+      width: 184px;
+      height: 165px;
+      object-fit: contain;
+    }
+
+    /* tagline */
+    .hero-tagline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 23px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 4px;
+      color: rgba(255, 255, 255, 0.60);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ── BOTTOM CARD ── */
+    .card {
+      background: #f8fafb;
+      border-radius: 64px 64px 0 0;
+      box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.10);
+      padding: 37px 32px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 50px;
+    }
+
+    /* buttons group */
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* ── BOOK NOW ── */
+    .btn-book {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      height: 120px;
+      padding: 10px 10px 10px 10px;
+      background: linear-gradient(116.29deg, #51606F 0%, #A2B2C3 100%);
+      border-radius: 45px;
+      text-decoration: none;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: opacity 0.18s;
+    }
+    .btn-book:hover { opacity: 0.92; }
+    .btn-book:active { opacity: 0.82; }
+
+    .btn-book-thumb {
+      width: 73px;
+      height: 100px;
+      border-radius: 64px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .btn-book-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .btn-book-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .btn-book-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.45px;
+      text-transform: uppercase;
+      line-height: 22.5px;
+    }
+    .btn-book-subtitle {
+      font-size: 12px;
+      font-weight: 300;
+      color: #d3d8dd;
+      line-height: 16px;
+    }
+
+    .btn-book-arrow {
+      flex-shrink: 0;
+      padding-left: 20px;
+      display: flex;
+      align-items: center;
+    }
+    .btn-book-arrow img {
+      width: 5px;
+      height: 9px;
+      display: block;
+    }
+
+    /* ── WEBSITE ── */
+    .btn-website {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 56px;
+      border: 1px solid rgba(81, 96, 111, 0.20);
+      border-radius: 9999px;
+      background: transparent;
+      color: #51606F;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.35px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.16s;
+      width: 100%;
+    }
+    .btn-website:hover { background: rgba(81, 96, 111, 0.04); }
+    .btn-website:active { background: rgba(81, 96, 111, 0.08); }
+
+    .btn-website-icon {
+      width: 12.75px;
+      height: 12.75px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* ── ADDRESS + FOOTER ── */
+    .footer-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .address {
+      font-size: 10px;
+      font-weight: 400;
+      color: rgba(81, 96, 111, 0.70);
+      text-align: center;
+      line-height: 16.25px;
+      max-width: 200px;
+    }
+
+    .address-icon-btn {
+      background: none;
+      border: none;
+      padding: 6px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .address-icon-btn:hover { opacity: 1; }
+    .address-icon-btn.copied { opacity: 1; }
+
+    .address-icon {
+      width: 11.625px;
+      height: 13.875px;
+      display: block;
+    }
+
+    /* ── COPYRIGHT ── */
+    .copyright {
+      font-size: 8px;
+      font-weight: 400;
+      color: rgba(81, 96, 111, 0.50);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      width: 238px;
+    }
+
+    @media (max-width: 390px) {
+      .phone { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+
+    <!-- ── HERO ── -->
+    <div class="hero">
+      <img
+        class="hero-bg"
+        src="https://www.figma.com/api/mcp/asset/82272ef0-7057-46bd-8e9a-6b7affae7228"
+        alt=""
+        aria-hidden="true"
+      >
+      <div class="hero-overlay"></div>
+
+      <div class="hero-logo-wrap">
+        <img
+          class="hero-logo"
+          src="https://www.figma.com/api/mcp/asset/3d258ddd-c1ad-4bbb-8ee9-167ffae2ab0c"
+          alt="Nail Studio by Yulia Grunkovskaya logo"
+        >
+      </div>
+
+      <div class="hero-tagline">Private &nbsp;·&nbsp; Sterile &nbsp;·&nbsp; Precise</div>
+    </div>
+
+    <!-- ── BOTTOM CARD ── -->
+    <div class="card">
+
+      <div class="buttons">
+        <!-- Book Now -->
+        <a href="#" class="btn-book" aria-label="Book Now — Premium Manicure Services">
+          <div class="btn-book-thumb">
+            <img
+              src="https://www.figma.com/api/mcp/asset/0fff4071-dea4-4d6b-89e1-d6b4e38a6261"
+              alt="Nail art"
+            >
+          </div>
+          <div class="btn-book-text">
+            <span class="btn-book-title">Book Now</span>
+            <span class="btn-book-subtitle">Premium Manicure Services</span>
+          </div>
+          <div class="btn-book-arrow">
+            <img
+              src="https://www.figma.com/api/mcp/asset/c53b34f0-ef1d-48e6-aa9b-ec67f0d12887"
+              alt=""
+              aria-hidden="true"
+            >
+          </div>
+        </a>
+
+        <!-- Website -->
+        <a href="#" class="btn-website" aria-label="Visit website">
+          Website
+          <img
+            class="btn-website-icon"
+            src="https://www.figma.com/api/mcp/asset/962f2a86-a489-4b99-8db8-a8176e74f39f"
+            alt=""
+            aria-hidden="true"
+          >
+        </a>
+      </div>
+
+      <!-- Address -->
+      <div class="footer-block">
+        <p class="address">
+          7301 Topanga Canyon Blvd, Suite 203,<br>
+          Los Angeles, CA 91303
+        </p>
+        <button
+          class="address-icon-btn"
+          onclick="copyAddress(this)"
+          aria-label="Copy address"
+          title="Copy address"
+        >
+          <img
+            class="address-icon"
+            src="https://www.figma.com/api/mcp/asset/ba4a2d00-217c-4bc3-a0f2-c725240077c7"
+            alt=""
+            aria-hidden="true"
+          >
+        </button>
+      </div>
+
+      <!-- Copyright -->
+      <p class="copyright">© Nail Studio by Yulia Grunkovskaya</p>
+
+    </div>
+  </div>
+
+  <script>
+    function copyAddress(btn) {
+      navigator.clipboard.writeText('7301 Topanga Canyon Blvd, Suite 203, Los Angeles, CA 91303')
+        .then(() => {
+          btn.classList.add('copied');
+          btn.title = 'Copied!';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.title = 'Copy address';
+          }, 2000);
+        });
+    }
+  </script>
+</body>
+</html>
