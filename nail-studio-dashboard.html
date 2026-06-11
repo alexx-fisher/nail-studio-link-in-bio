@@ -1154,6 +1154,66 @@ const DEFAULTS = {
         { title:'', text:'как часто вы изучаете стерилизацию своего мастера' },
       ]
     },
+    {
+      title:'Красивый ролик со сменой кадров салона', type:'Рилс', published:false,
+      description:'Атмосферный ролик с переходами между кадрами готовой студии',
+      slides:[
+        { title:'Формат', text:'Смена кадров салона под музыку — эстетика, интерьер, детали' },
+      ]
+    },
+    {
+      title:'Рилс со стройкой и сменой кадров по музыку', type:'Рилс', published:false,
+      description:'До и после — стройка vs готовая студия, монтаж по музыку',
+      slides:[
+        { title:'Формат', text:'Чередование кадров стройки и готового пространства по биту' },
+      ]
+    },
+    {
+      title:'Рилс - Что такое автоклав?', type:'Рилс', published:false,
+      description:'Образовательный рилс про автоклав и стерилизацию',
+      slides:[
+        { title:'Формат', text:'Объясняем что такое автоклав, зачем он нужен и чем отличается от обычной дезинфекции' },
+      ]
+    },
+    {
+      title:'Рилс - кадры со стройки и готовой студии под музыку', type:'Рилс', published:false,
+      description:'Трансформация пространства — от стройки до готовой студии',
+      slides:[
+        { title:'Формат', text:'Параллельный монтаж: стройка → готовая студия, под музыку' },
+      ]
+    },
+    {
+      title:'Красивые кадры студии под музыку', type:'Карусель', published:false,
+      description:'Атмосферные фото интерьера студии',
+      slides:[
+        { title:'Формат', text:'Карусель с красивыми кадрами студии — детали, свет, интерьер' },
+      ]
+    },
+    {
+      title:'Переключение кадров со стройки (звуковые эффекты)', type:'Рилс', published:false,
+      description:'Динамичный рилс со стройки с звуковыми эффектами при переходах',
+      slides:[
+        { title:'Формат', text:'Монтаж кадров стройки с акцентом на звуковые эффекты при смене кадра' },
+      ]
+    },
+    {
+      title:'Рилс с Юлей под трендовую музыку', type:'Рилс', published:false,
+      description:'Рилс с мастером Юлей — лайфстайл, трендовый звук',
+      slides:[
+        { title:'Формат', text:'Юля в студии под трендовый аудио-трек — лёгкий, живой контент' },
+      ]
+    },
+    {
+      title:'Почему мы работаем гелями, а не базой и почему это лучше', type:'Карусель', published:false,
+      description:'Образовательная карусель — гели vs база, преимущества hard gel',
+      slides:[
+        { title:'Обложка', text:'Почему мы работаем гелями, а не базой?' },
+        { title:'', text:'Hard gel и poly gel держатся 3–4 недели без сколов и отслоек — база не даёт такого результата' },
+        { title:'', text:'Гели создают защитный слой, который сохраняет натуральный ноготь здоровым' },
+        { title:'', text:'База требует более частого обновления и менее стойка к механическим повреждениям' },
+        { title:'Финал', text:'Запишитесь и убедитесь в разнице сами 💅' },
+      ]
+    },
   ]
 };
 
@@ -1225,8 +1285,21 @@ async function loadFromDB() {
       .single();
     if (error) throw error;
     if (data?.data && Object.keys(data.data).length > 0) {
-      applyData(data.data);
+      const dbData = data.data;
+      // Merge posts: keep all DB posts + add any hardcoded posts missing from DB
+      if (dbData.posts && state.posts) {
+        const dbTitles = new Set(dbData.posts.map(p => p.title));
+        const missingPosts = state.posts.filter(p => !dbTitles.has(p.title));
+        if (missingPosts.length > 0) {
+          dbData.posts = [...dbData.posts, ...missingPosts];
+        }
+      }
+      applyData(dbData);
       renderAll();
+      // If we added missing posts, save the merged state back
+      const dbTitlesAfter = new Set((dbData.posts||[]).map(p => p.title));
+      const hadMissing = state.posts.some(p => !dbTitlesAfter.has(p.title));
+      if (hadMissing) await saveToDB();
     } else {
       await saveToDB();
     }
